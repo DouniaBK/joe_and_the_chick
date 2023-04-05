@@ -17,7 +17,28 @@ def main(stdscr):
     for y, x in snake:
         stdscr.addstr(y, x, '🟰')
     
-    
+    while 1:
+        # everytime the snake moves, anew head has to be created to resamble motion
+        key= stdscr.getch()
+
+        if key in [curses.KEY_RIGHT, curses.KEY_LEFT, curses.KEY_UP, curses.KEY_DOWN]
+            direction = key
+        
+        head = snake[0]
+
+        if direction == curses.KEY_RIGHT:
+            new_head = [head[0], head[1]+1]
+        elif direction == curses.KEY_LEFT:
+            new_head = [head[0], head[1]-1]
+        elif direction == curses.KEY_UP:
+            new_head = [head[0], head[1]-1]
+        elif direction == curses.KEY_DOWN:
+            new_head = [head[0], head[1]-1]
+
+        snake.insert(0, new_head)
+        stdscr  .addstr(new_head[0], new_head[1], '🟰')  
+
+
 
 
 curses.wrapper(main)
