@@ -16,6 +16,12 @@ def food_coord(snake, box):
     return chick
 
 
+# print score
+def print_score(stdscr, score):
+    sh, sw = stdscr.getmaxyx()
+    score_display = "Score: {}".format(score)
+    stdscr.addstr(1, sw//2-len(score_display)//2, score_display)
+    stdscr.refresh()
 
 
 # create the textpad rectangle where the field goes
@@ -41,8 +47,7 @@ def main(stdscr):
 
     # print score
     score = 0
-    score_display = "Score: {}".format(score)
-    stdscr.addstr(1, sw//2-len(score_display)//2, score_display)
+    print_score(stdscr, score)
 
     while 1:
         # everytime the snake moves, anew head has to be created
@@ -69,15 +74,15 @@ def main(stdscr):
         snake.insert(0, new_head)
 
         # increment the score if snake catches the chick
+        # display a new chick after the last one is eaten
         # and increase the lenght of the snake
         if snake[0] == chick:
-            # increment score
-            score += 1
-            score_display = "Score: {}".format(score)
-            stdscr.addstr(1, sw//2-len(score_display)//2, score_display)
             # display a new chick everytime the snake eats the last one
             chick = food_coord(snake, box)
             stdscr.addstr(chick[0], chick[1], '🐤')
+            # increment score
+            score += 1
+            print_score(stdscr, score)
         else:
             # to mimic motion the last part of the head has to be removed and
             # replaced by a space
