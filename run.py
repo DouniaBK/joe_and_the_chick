@@ -1,6 +1,17 @@
 import curses
 from curses import textpad
 import random
+import emoji
+
+OPPOSITE_DIRECTION_DICT = {
+    curses.KEY_UP: curses.KEY_DOWN,
+    curses.KEY_DOWN: curses.KEY_UP,
+    curses.KEY_RIGHT: curses.KEY_LEFT,
+    curses.KEY_LEFT: curses.KEY_RIGHT
+}
+
+DIRECTIONS_LIST = [curses.KEY_RIGHT,
+                   curses.KEY_LEFT, curses.KEY_DOWN, curses.KEY_UP]
 
 
 # Food coordinate making sure it does not appear on the the body
@@ -27,6 +38,7 @@ def print_score(stdscr, score):
 # create the textpad rectangle where the field goes
 def main(stdscr):
     curses.curs_set(0)
+    curses.noecho()
     stdscr.nodelay(1)
     stdscr.timeout(150)
     sh, sw = stdscr.getmaxyx()
@@ -98,9 +110,11 @@ def main(stdscr):
             stdscr.addstr(sh//2, sw//2-len(msg)//2, msg)
             stdscr.nodelay(0)
             stdscr.getch()
+            break
 
-        stdscr.refresh()
-        key = stdscr.getch()
+        # stdscr.refresh()
+        # key = stdscr.getch()
+
 
 
 curses.wrapper(main)
