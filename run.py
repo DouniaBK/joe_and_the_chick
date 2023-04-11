@@ -3,6 +3,7 @@ from curses import textpad
 import random
 import copy
 
+
 OPPOSITE_DIRECTION_DICT = {
     curses.KEY_UP: curses.KEY_DOWN,
     curses.KEY_DOWN: curses.KEY_UP,
@@ -17,6 +18,8 @@ DIRECTIONS_LIST = [curses.KEY_RIGHT,
 """
 find the food coordinates making sure it appears inside the box
 but not on the body of the snake """
+
+
 def food_coord(snake, box):
     chick = None
 
@@ -35,14 +38,20 @@ def print_score(stdscr, score):
     stdscr.addstr(1, sw//2-len(score_display)//2, score_display)
     stdscr.refresh()
 
-# Determine if the snake ate the chick and return true if so
-# The terminal draws the chick one cell to the left
-# due to the emoji size. This visual offset is 
-# compensated for here by extending the radius of possible hits
+
+"""
+Determine if the snake ate the chick and return true if so
+The terminal draws the chick one cell to the left
+due to the emoji size. This visual offset is
+compensated for here by extending the radius of possible hits
+"""
+
+
 def snake_ate_chick(coords_snake_head, coords_chick):
     chick_with_offset = copy.deepcopy(coords_chick)
     chick_with_offset[1] = chick_with_offset[1] + 1
     return (coords_snake_head == chick_with_offset) or (coords_snake_head == coords_chick)
+
 
 def main(stdscr):
     # set up curses
@@ -107,7 +116,7 @@ def main(stdscr):
             print_score(stdscr, score)
             # display a new chick everytime the snake eats the last one
             chick = food_coord(snake, box)
-            
+
             stdscr.addstr(chick[0], chick[1], '🐤')
             # increase speed of the game
             stdscr.timeout(100 - (len(snake)//3) % 90)
@@ -130,7 +139,6 @@ def main(stdscr):
 
         stdscr.refresh()
         # key = stdscr.getch()
-
 
 
 curses.wrapper(main)
