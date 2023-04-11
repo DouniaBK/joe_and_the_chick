@@ -1,4 +1,5 @@
 import curses
+
 from curses import wrapper
 
 menu = ['Home', 'Play', 'Settings', 'Exit']
