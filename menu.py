@@ -4,7 +4,6 @@ from curses import wrapper
 
 menu = ['Home', 'Play', 'Settings', 'Exit']
 
-
 def print_menu(stdscr, selected_row_idx):
     stdscr.clear()
     h, w = stdscr.getmaxyx()
@@ -31,7 +30,7 @@ def print_center(stdscr, text):
 
 def main(stdscr):
     curses.curs_set(0)
-    curses.init_pair(1, curses.COLOR_BLUE, curses.COLOR_CYAN)
+    curses.init_pair(1, curses.COLOR_GREEN, curses.COLOR_CYAN)
 
     current_row = 0
     print_menu(stdscr, current_row)
