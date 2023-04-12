@@ -97,22 +97,24 @@ class Game:
             self.box[0][1], self.box[1][1]] or self.snake[0] in self.snake[1:]
 
         # Check for collision with items on the field
-        collision = collision or (self.fieldItems[self.snake[0][0], self.snake[0][1]] == 1)
+        collision = collision or (
+            self.fieldItems[self.snake[0][0], self.snake[0][1]] == 1)
 
         return collision
 
     """
     Generate a barrier at a random place
     """
+
     def generate_barrier(self):
         barrier = [random.randint(
-                self.box[0][0]+1, self.box[1][0]-1), random.randint(self.box[0][1]+1, self.box[1][1]-1)]
+            self.box[0][0]+1, self.box[1][0]-1), random.randint(self.box[0][1]+1, self.box[1][1]-1)]
         self.fieldItems[barrier[0], barrier[1]] = 1
         self.fieldItems[barrier[0], barrier[1]+1] = 1
         self.fieldItems[barrier[0], barrier[1]+2] = 1
 
-
     # Print a barrier on the field
+
     def draw_barrier(self):
         for x in range(self.fieldItems.shape[0]):
             for y in range(self.fieldItems.shape[1]):
