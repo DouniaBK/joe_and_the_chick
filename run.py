@@ -102,6 +102,24 @@ class Game:
         return collision
 
     """
+    Generate a barrier at a random place
+    """
+    def generate_barrier(self):
+        barrier = [random.randint(
+                self.box[0][0]+1, self.box[1][0]-1), random.randint(self.box[0][1]+1, self.box[1][1]-1)]
+        self.fieldItems[barrier[0], barrier[1]] = 1
+        self.fieldItems[barrier[0], barrier[1]+1] = 1
+        self.fieldItems[barrier[0], barrier[1]+2] = 1
+
+
+    # Print a barrier on the field
+    def draw_barrier(self):
+        for x in range(self.fieldItems.shape[0]):
+            for y in range(self.fieldItems.shape[1]):
+                if self.fieldItems[x, y] == 1:
+                    self.stdscr.addstr(x, y, '▩')
+
+    """
     Determine if the snake ate the chick and return true if so
     The terminal draws the chick one cell to the left
     due to the emoji size. This visual offset is
@@ -135,6 +153,10 @@ class Game:
 
         # initialize field items array, which stores the game level
         self.fieldItems = np.zeros((sh, sw))
+
+        # generate_barrier
+        self.generate_barrier()
+        self.draw_barrier()
 
         # set the snake's 3 body parts
         self.snake = [[sh//2, sw//2+1], [sh//2, sh//2], [sh//2, sw//2-1]]
@@ -195,9 +217,11 @@ class Game:
                 # replaced by a space
                 self.stdscr.addstr(self.snake[-1][0], self.snake[-1][1], ' ')
                 self.snake.pop()
-            # rules of the game
-            # if snake crashes agaist the border or bites itself
-            # the game is over.
+            """
+            rules of the game
+            if snake crashes against the border, a barrier or bites itself
+            the game is over
+            """
             if (self.evaluate_field()):
                 msg = "Game Over!"
                 self.stdscr.addstr(sh//2, sw//2-len(msg)//2, msg)
