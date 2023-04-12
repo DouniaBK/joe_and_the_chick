@@ -19,7 +19,6 @@ DIRECTIONS_LIST = [curses.KEY_RIGHT,
 """-------------------- MENU -----------------------"""
 menu = ['Home', 'Play', 'Settings', 'Exit']
 
-
 def print_menu(stdscr, selected_row_idx):
     stdscr.clear()
     h, w = stdscr.getmaxyx()
