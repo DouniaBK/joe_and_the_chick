@@ -17,7 +17,6 @@ DIRECTIONS_LIST = [curses.KEY_RIGHT,
 
 
 """-------------------- MENU -----------------------"""
-
 menu = ['Home', 'Play', 'Settings', 'Exit']
 
 
@@ -62,12 +61,12 @@ def menu_main(stdscr):
         elif key == curses.KEY_DOWN and current_row < len(menu)-1:
             current_row += 1
         elif (key == curses.KEY_ENTER) or (key in [10, 13]):
-            print_center(
-                stdscr, "You selected to '{}".format(menu[current_row]))
-            stdscr.getch()
 
-            if current_row == len(menu)-1:
-                break
+            if menu[current_row] == 'Play':
+                return True
+
+            if menu[current_row] == 'Exit':
+                return False
 
         print_menu(stdscr, current_row)
     
@@ -115,12 +114,16 @@ def snake_ate_chick(coords_snake_head, coords_chick):
 
 def main(stdscr):
     # ----- Show Menu ----------
-    menu_main(stdscr)
+    ret_val = menu_main(stdscr)
+    # menu_main returns true or false, to continue or quit the game respetively
+    if not ret_val:
+        return
 
     # ----- Start Game ----------
     # set up curses
     curses.curs_set(0)
     curses.noecho()
+    stdscr.erase()
     stdscr.nodelay(1)
     stdscr.timeout(350)
 
