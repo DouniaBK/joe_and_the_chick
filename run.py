@@ -1,5 +1,6 @@
 import curses
 from curses import textpad
+import numpy as np
 import random
 import copy
 
@@ -13,8 +14,10 @@ class Game:
         self.box = []
         self.score = 0
         self.menu = ['Home', 'Play', 'Settings', 'Exit']
+        self.fieldItems = []
 
     """-------------------- MENU -----------------------"""
+
     def print_menu(self, selected_row_idx):
         self.stdscr.clear()
         h, w = self.stdscr.getmaxyx()
@@ -50,7 +53,7 @@ class Game:
 
             if key == curses.KEY_UP and current_row > 0:
                 current_row -= 1
-                
+
             elif key == curses.KEY_DOWN and current_row < len(self.menu)-1:
                 current_row += 1
             elif (key == curses.KEY_ENTER) or (key in [10, 13]):
@@ -62,17 +65,19 @@ class Game:
                     return False
 
             self.print_menu(current_row)
-        
+
     """-------------------- Game -----------------------"""
     """
     find the food coordinates making sure it appears inside the box
     but not on the body of the snake 
     """
+
     def food_coord(self):
         coords_chick = None
 
         while coords_chick is None:
-            coords_chick = [random.randint(self.box[0][0]+1, self.box[1][0]-1), random.randint(self.box[0][1]+1, self.box[1][1]-1)]
+            coords_chick = [random.randint(
+                self.box[0][0]+1, self.box[1][0]-1), random.randint(self.box[0][1]+1, self.box[1][1]-1)]
             if coords_chick in self.snake:
                 coords_chick = None
         return coords_chick
@@ -83,6 +88,18 @@ class Game:
         score_display = "Score: {}".format(self.score)
         self.stdscr.addstr(1, sw//2-len(score_display)//2, score_display)
         self.stdscr.refresh()
+
+    # Check for collision, or whether the snake bit itself
+    def evaluate_field(self):
+
+        # Check for collision with border or itself
+        collision = self.snake[0][0] in [self.box[0][0], self.box[1][0]] or self.snake[0][1] in [
+            self.box[0][1], self.box[1][1]] or self.snake[0] in self.snake[1:]
+
+        # Check for collision with items on the field
+        collision = collision or (self.fieldItems[self.snake[0][0], self.snake[0][1]] == 1)
+
+        return collision
 
     """
     Determine if the snake ate the chick and return true if so
@@ -95,7 +112,7 @@ class Game:
         chick_with_offset = copy.deepcopy(coords_chick)
         chick_with_offset[1] = chick_with_offset[1] + 1
         return (coords_snake_head == chick_with_offset) or (coords_snake_head == coords_chick)
-    
+
     def run(self):
         # ----- Show Menu ----------
         ret_val = self.menu_main()
@@ -112,8 +129,12 @@ class Game:
         # create the textpad rectangle where the field goes
         sh, sw = self.stdscr.getmaxyx()
         self.box = [[3, 3], [sh-3, sw-3]]
-        textpad.rectangle(self.stdscr, self.box[0][0], self.box[0][1], self.box[1][0], self.box[1][1])
+        textpad.rectangle(
+            self.stdscr, self.box[0][0], self.box[0][1], self.box[1][0], self.box[1][1])
         self.stdscr.getch()
+
+        # initialize field items array, which stores the game level
+        self.fieldItems = np.zeros((sh, sw))
 
         # set the snake's 3 body parts
         self.snake = [[sh//2, sw//2+1], [sh//2, sh//2], [sh//2, sw//2-1]]
@@ -137,7 +158,7 @@ class Game:
             key = self.stdscr.getch()
 
             if key in [curses.KEY_RIGHT, curses.KEY_LEFT, curses.KEY_UP,
-                    curses.KEY_DOWN]:
+                       curses.KEY_DOWN]:
                 direction = key
 
             head = self.snake[0]
@@ -177,9 +198,7 @@ class Game:
             # rules of the game
             # if snake crashes agaist the border or bites itself
             # the game is over.
-            if (self.snake[0][0] in [self.box[0][0], self.box[1][0]] or
-                self.snake[0][1] in [self.box[0][1], self.box[1][1]] or
-                    self.snake[0] in self.snake[1:]):
+            if (self.evaluate_field()):
                 msg = "Game Over!"
                 self.stdscr.addstr(sh//2, sw//2-len(msg)//2, msg)
                 self.stdscr.nodelay(0)
@@ -190,7 +209,7 @@ class Game:
             # key = self.stdscr.getch()
 
 
-def main(stdscr): 
+def main(stdscr):
     game = Game(stdscr)
     game.run()
     curses.endwin()
@@ -201,7 +220,7 @@ if __name__ == "__main__":
     try:
         # start main program loop
         curses.wrapper(main)
-            
+
     # quit curses and print exception if there was an error
     except Exception:
         print("Exception")
