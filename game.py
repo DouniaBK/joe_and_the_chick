@@ -13,6 +13,57 @@ class Game:
         self.chick = []
         self.box = []
         self.score = 0
+        self.menu = ['Home', 'Play', 'Settings', 'Exit']
+
+    """-------------------- MENU -----------------------"""
+    def print_menu(self, selected_row_idx):
+        self.stdscr.clear()
+        h, w = self.stdscr.getmaxyx()
+        for idx, row in enumerate(self.menu):
+            x = w//2 - len(row)//2
+            y = h//2 - len(self.menu)//2 + idx
+            if idx == selected_row_idx:
+                self.stdscr.attron(curses.color_pair(1))
+                self.stdscr.addstr(y, x, row)
+                self.stdscr.attroff(curses.color_pair(1))
+            else:
+                self.stdscr.addstr(y, x, row)
+        self.stdscr.refresh()
+
+    def print_center(self, text):
+        self.stdscr.clear()
+        h, w = self.stdscr.getmaxyx()
+        x = w//2 - len(text)//2
+        y = h//2
+        self.stdscr.addstr(y, x, text)
+        self.stdscr.refresh()
+
+    def menu_main(self):
+
+        curses.curs_set(0)
+        curses.init_pair(1, curses.COLOR_GREEN, curses.COLOR_CYAN)
+
+        current_row = 0
+        self.print_menu(current_row)
+
+        while 1:
+            key = self.stdscr.getch()
+
+            if key == curses.KEY_UP and current_row > 0:
+                current_row -= 1
+                
+            elif key == curses.KEY_DOWN and current_row < len(self.menu)-1:
+                current_row += 1
+            elif (key == curses.KEY_ENTER) or (key in [10, 13]):
+
+                if self.menu[current_row] == 'Play':
+                    return True
+
+                if self.menu[current_row] == 'Exit':
+                    return False
+
+            self.print_menu(current_row)
+        
 
     """
     find the food coordinates making sure it appears inside the box
@@ -47,6 +98,11 @@ class Game:
         return (coords_snake_head == chick_with_offset) or (coords_snake_head == coords_chick)
     
     def main(self):
+        # ----- Show Menu ----------
+        ret_val = self.menu_main()
+        # menu_main returns true or false, to continue or quit the game respectively
+        if not ret_val:
+            return
         # ----- Start Game ----------
         # set up curses
         curses.curs_set(0)
