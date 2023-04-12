@@ -7,26 +7,30 @@ import copy
 
 class Game:
     def __init__(self, stdscr):
-        print('init')
+        curses.noecho()
         self.stdscr = stdscr  # Standardscreen parameter returned by curses
-        
+        self.snake = []
+        self.chick = []
+        self.box = []
+        self.score = 0
+
     """
     find the food coordinates making sure it appears inside the box
     but not on the body of the snake 
     """
-    def food_coord(self, snake, box):
-        chick = None
+    def food_coord(self):
+        coords_chick = None
 
-        while chick is None:
-            chick = [random.randint(box[0][0]+1, box[1][0]-1), random.randint(box[0][1]+1, box[1][1]-1)]
-            if chick in snake:
-                chick = None
-        return chick
+        while coords_chick is None:
+            coords_chick = [random.randint(self.box[0][0]+1, self.box[1][0]-1), random.randint(self.box[0][1]+1, self.box[1][1]-1)]
+            if coords_chick in self.snake:
+                coords_chick = None
+        return coords_chick
 
     # print score in the middle of the box
-    def print_score(self, score):
+    def print_score(self):
         sh, sw = self.stdscr.getmaxyx()
-        score_display = "Score: {}".format(score)
+        score_display = "Score: {}".format(self.score)
         self.stdscr.addstr(1, sw//2-len(score_display)//2, score_display)
         self.stdscr.refresh()
 
@@ -46,32 +50,31 @@ class Game:
         # ----- Start Game ----------
         # set up curses
         curses.curs_set(0)
-        curses.noecho()
         self.stdscr.erase()
         self.stdscr.nodelay(1)
         self.stdscr.timeout(350)
 
         # create the textpad rectangle where the field goes
         sh, sw = self.stdscr.getmaxyx()
-        box = [[3, 3], [sh-3, sw-3]]
-        textpad.rectangle(self.stdscr, box[0][0], box[0][1], box[1][0], box[1][1])
+        self.box = [[3, 3], [sh-3, sw-3]]
+        textpad.rectangle(self.stdscr, self.box[0][0], self.box[0][1], self.box[1][0], self.box[1][1])
         self.stdscr.getch()
 
         # set the snake's 3 body parts
-        snake = [[sh//2, sw//2+1], [sh//2, sh//2], [sh//2, sw//2-1]]
+        self.snake = [[sh//2, sw//2+1], [sh//2, sh//2], [sh//2, sw//2-1]]
         direction = curses.KEY_RIGHT
 
         # draw snake's body with a character emoji
-        for y, x in snake:
+        for y, x in self.snake:
             self.stdscr.addstr(y, x, '▓')
 
         # create the chick with an emoji
-        chick = self.food_coord(snake, box)
-        self.stdscr.addstr(chick[0], chick[1], '🐤')
+        self.chick = self.food_coord()
+        self.stdscr.addstr(self.chick[0], self.chick[1], '🐤')
 
         # print score
-        score = 0
-        self.print_score(score)
+        self.score = 0
+        self.print_score()
 
         while 1:
             # everytime the snake moves, anew head is created
@@ -82,7 +85,7 @@ class Game:
                     curses.KEY_DOWN]:
                 direction = key
 
-            head = snake[0]
+            head = self.snake[0]
 
             if direction == curses.KEY_RIGHT:
                 new_head = [head[0], head[1]+1]
@@ -95,33 +98,33 @@ class Game:
 
             # insert a new head
             self.stdscr.addstr(new_head[0], new_head[1], '▓')
-            snake.insert(0, new_head)
+            self.snake.insert(0, new_head)
 
             # increment the score if snake catches the chick
             # display a new chick after the last one is eaten
             # and increase the lenght of the snake
-            eaten = self.snake_ate_chick(snake[0], chick)
+            eaten = self.snake_ate_chick(self.snake[0], self.chick)
             if eaten:
                 # increment score
-                score += 1
-                self.print_score(score)
+                self.score += 1
+                self.print_score()
                 # display a new chick everytime the snake eats the last one
-                chick = self.food_coord(snake, box)
+                self.chick = self.food_coord()
 
-                self.stdscr.addstr(chick[0], chick[1], '🐤')
+                self.stdscr.addstr(self.chick[0], self.chick[1], '🐤')
                 # increase speed of the game
-                self.stdscr.timeout(100 - (len(snake)//3) % 90)
+                self.stdscr.timeout(100 - (len(self.snake)//3) % 90)
             else:
                 # to mimic motion the last part of the head has to be removed and
                 # replaced by a space
-                self.stdscr.addstr(snake[-1][0], snake[-1][1], ' ')
-                snake.pop()
+                self.stdscr.addstr(self.snake[-1][0], self.snake[-1][1], ' ')
+                self.snake.pop()
             # rules of the game
             # if snake crashes agaist the border or bites itself
             # the game is over.
-            if (snake[0][0] in [box[0][0], box[1][0]] or
-                snake[0][1] in [box[0][1], box[1][1]] or
-                    snake[0] in snake[1:]):
+            if (self.snake[0][0] in [self.box[0][0], self.box[1][0]] or
+                self.snake[0][1] in [self.box[0][1], self.box[1][1]] or
+                    self.snake[0] in self.snake[1:]):
                 msg = "Game Over!"
                 self.stdscr.addstr(sh//2, sw//2-len(msg)//2, msg)
                 self.stdscr.nodelay(0)
