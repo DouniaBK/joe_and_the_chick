@@ -18,6 +18,7 @@ class Game:
         self.menu = ['Home', 'Play', 'Settings', 'Exit']
         self.direction = curses.KEY_RIGHT
         self.fieldItems = []
+        self.self_defense_coordinate = None
 
     """-------------------- MENU -----------------------"""
 
@@ -77,12 +78,10 @@ class Game:
             self.print_menu(current_row)
 
     """-------------------- Game -----------------------"""
-    """
-    find the food coordinates making sure it appears inside the box
-    but not on the body of the snake 
-    """
-
-    def find_free_coordinate(self):
+    def find_free_coordinate(self): 
+        """
+        find the food coordinates making sure it appears inside the box
+        but not on the body of the snake """
         free_coord = None
 
         while free_coord is None:
@@ -201,7 +200,7 @@ class Game:
         self.score = 0
         self.print_score()
 
-        self.stdscr.timeout(200)
+        self.stdscr.timeout(400)
         self.stdscr.refresh()
 
     def progress_to_next_level(self):
@@ -227,6 +226,8 @@ class Game:
 
     def snake_ate_stuff(self):
         """
+        Detect if snake ate a sandwich and reward two points
+        Detect if snake ate taser and derement one point
         """
         ate_stuff = False
         # Snake ate sandwitch
@@ -242,11 +243,30 @@ class Game:
                 self.score = 0
             self.print_score()
             ate_stuff = True
-        
+
         if ate_stuff == True:
             self.fieldItems[self.snake[0][0], self.snake[0][1]] = 0
         
-        
+    def activate_chick_self_defense(self):
+        """
+        Print the lightening bold , representing a taser, right next to the chick
+        but if the spot is occupied, don't print
+        """
+        if self.score >= 0:
+            self_defense_coords = copy.deepcopy(self.chick)
+            self_defense_coords[0] = self_defense_coords[0] - 1
+            self_defense_coords[1] = self_defense_coords[1] + 1
+            if self.fieldItems[self_defense_coords[0], self_defense_coords[1]] == 0:
+                self.fieldItems[self_defense_coords[0], self_defense_coords[1]] = 3
+                self.stdscr.addstr(self_defense_coords[0], self_defense_coords[1], '⚡')
+                self.self_defense_coordinate = self_defense_coords
+
+    def deactivate_chick_self_defense(self):
+        """ Clean up old chicks self defense weapon """
+        if not self.self_defense_coordinate == None:
+            self.stdscr.addstr(self.self_defense_coordinate[0], self.self_defense_coordinate[1], ' ')
+            self.self_defense_coordinate = None
+            self.stdscr.refresh()
 
     def run(self):
         # ----- Show Menu ----------
@@ -305,12 +325,16 @@ class Game:
                 # increment score
                 self.score += 1
                 self.print_score()
+
+                self.deactivate_chick_self_defense()
+
                 # display a new chick everytime the snake eats the last one
                 self.chick = self.food_coord()
 
                 self.stdscr.addstr(self.chick[0], self.chick[1], '🐤')
+                self.activate_chick_self_defense()
                 # increase speed of the game
-                self.stdscr.timeout(100 - (len(self.snake)//3) % 90)
+                #self.stdscr.timeout(100 - (len(self.snake)//3) % 90)
             else:
                 # to mimic motion the last part of the head has to be removed
                 # and replaced by a space
@@ -352,5 +376,5 @@ if __name__ == "__main__":
         curses.wrapper(main)
 
     # quit curses and print exception if there was an error
-    except Exception:
-        print(Exception)
+    except Exception as e:
+        print(e)
