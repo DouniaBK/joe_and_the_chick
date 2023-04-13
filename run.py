@@ -3,6 +3,7 @@ from curses import textpad
 import numpy as np
 import random
 import copy
+import time
 
 
 class Game:
@@ -13,7 +14,9 @@ class Game:
         self.chick = []
         self.box = []
         self.score = 0
+        self.level = 1
         self.menu = ['Home', 'Play', 'Settings', 'Exit']
+        self.direction = curses.KEY_RIGHT
         self.fieldItems = []
 
     """-------------------- MENU -----------------------"""
@@ -42,11 +45,13 @@ class Game:
 
     def menu_main(self):
         # Try block to handle terminal incompatibility 
-        # with disabling the cursor
+        # with disabling the cursor. If terminal does not
+        # support invisible cursors, as the one provided in the
+        # code-institute template, curs_set will return an error.
         try:
             curses.curs_set(0)
         except Exception:
-            print("curses.curs_set(0) not supported")
+            print("Disabling cursor not supported by terminal")
         
         curses.init_pair(1, curses.COLOR_GREEN, curses.COLOR_CYAN)
 
@@ -112,19 +117,85 @@ class Game:
     """
 
     def generate_barrier(self):
-        barrier = [random.randint(
-            self.box[0][0]+1, self.box[1][0]-1), random.randint(self.box[0][1]+1, self.box[1][1]-1)]
-        self.fieldItems[barrier[0], barrier[1]] = 1
-        self.fieldItems[barrier[0], barrier[1]+1] = 1
-        self.fieldItems[barrier[0], barrier[1]+2] = 1
+
+        if self.level == 1:
+            barrier = [random.randint(
+                self.box[0][0]+1, self.box[1][0]-1), random.randint(self.box[0][1]+1, self.box[1][1]-1)]
+            self.fieldItems[barrier[0], barrier[1]] = 1
+            self.fieldItems[barrier[0], barrier[1]+1] = 1
+            self.fieldItems[barrier[0], barrier[1]+2] = 1
+            
+        if self.level == 2:
+            barrier = [random.randint(
+                self.box[0][0]+1, self.box[1][0]-1), random.randint(self.box[0][1]+1, self.box[1][1]-1)]
+            self.fieldItems[barrier[0], barrier[1]] = 1
+            self.fieldItems[barrier[0]+1, barrier[1]+1] = 1
+            self.fieldItems[barrier[0]+2, barrier[1]+2] = 1
+            self.fieldItems[barrier[0]+3, barrier[1]+3] = 1
+            self.fieldItems[barrier[0]+4, barrier[1]+4] = 1
 
     # Print a barrier on the field
-
     def draw_barrier(self):
         for x in range(self.fieldItems.shape[0]):
             for y in range(self.fieldItems.shape[1]):
                 if self.fieldItems[x, y] == 1:
                     self.stdscr.addstr(x, y, '▩')
+    
+    def evaluate_level_up(self):
+        if (self.score >= 1):
+            self.level = self.level + 1
+            return True
+        
+        return False
+
+    def initialize_field(self):
+
+        self.stdscr.erase()
+        self.stdscr.nodelay(1)
+        # create the textpad rectangle where the field goes
+        sh, sw = self.stdscr.getmaxyx()
+        self.box = [[3, 3], [sh-3, sw-3]]
+        textpad.rectangle(
+            self.stdscr, self.box[0][0], self.box[0][1], self.box[1][0], self.box[1][1])
+
+        # initialize field items array, which stores the game level
+        self.fieldItems = np.zeros((sh, sw))
+
+        # generate_barrier
+        self.generate_barrier()
+        self.draw_barrier()
+
+        # set the snake's 3 body parts
+        self.snake = [[sh//2, sw//2+1], [sh//2, sh//2], [sh//2, sw//2-1]]
+        self.direction = curses.KEY_RIGHT
+
+        # draw snake's body with a character emoji
+        for y, x in self.snake:
+            self.stdscr.addstr(y, x, '▓')
+
+        # create the chick with an emoji
+        self.chick = self.food_coord()
+        self.stdscr.addstr(self.chick[0], self.chick[1], '🐤')
+
+        # print score
+        self.score = 0
+        self.print_score()
+        
+        self.stdscr.timeout(200)
+        self.stdscr.refresh()
+
+
+    def progress_to_next_level(self):
+        msg = "Level up"
+        sh, sw = self.stdscr.getmaxyx()
+        self.stdscr.addstr(sh//2, sw//2-len(msg)//2, msg)
+        self.stdscr.nodelay(0)
+        #key = self.stdscr.getch()
+        self.stdscr.refresh()
+        time.sleep(5)
+        self.initialize_field()
+
+
 
     """
     Determine if the snake ate the chick and return true if so
@@ -147,45 +218,18 @@ class Game:
         # ----- Start Game ----------
         # set up curses
         # Try block to handle terminal incompatibility 
-        # with disabling the cursor
+        # with disabling the cursor. If terminal does not
+        # support invisible cursors, as the one provided in the
+        # code-institute template, curs_set will return an error.
         try:
             curses.curs_set(0)
         except Exception:
-            print("curses.curs_set(0) not supported")
-        
-        self.stdscr.erase()
+            print("Disabling cursor not supported by terminal")
         self.stdscr.nodelay(1)
-        self.stdscr.timeout(350)
 
-        # create the textpad rectangle where the field goes
-        sh, sw = self.stdscr.getmaxyx()
-        self.box = [[3, 3], [sh-3, sw-3]]
-        textpad.rectangle(
-            self.stdscr, self.box[0][0], self.box[0][1], self.box[1][0], self.box[1][1])
-        self.stdscr.getch()
 
-        # initialize field items array, which stores the game level
-        self.fieldItems = np.zeros((sh, sw))
-
-        # generate_barrier
-        self.generate_barrier()
-        self.draw_barrier()
-
-        # set the snake's 3 body parts
-        self.snake = [[sh//2, sw//2+1], [sh//2, sh//2], [sh//2, sw//2-1]]
-        direction = curses.KEY_RIGHT
-
-        # draw snake's body with a character emoji
-        for y, x in self.snake:
-            self.stdscr.addstr(y, x, '▓')
-
-        # create the chick with an emoji
-        self.chick = self.food_coord()
-        self.stdscr.addstr(self.chick[0], self.chick[1], '🐤')
-
-        # print score
-        self.score = 0
-        self.print_score()
+        # Initialize the playing field based on the current level
+        self.initialize_field()
 
         while 1:
             # everytime the snake moves, anew head is created
@@ -194,17 +238,17 @@ class Game:
 
             if key in [curses.KEY_RIGHT, curses.KEY_LEFT, curses.KEY_UP,
                        curses.KEY_DOWN]:
-                direction = key
+                self.direction = key
 
             head = self.snake[0]
 
-            if direction == curses.KEY_RIGHT:
+            if self.direction == curses.KEY_RIGHT:
                 new_head = [head[0], head[1]+1]
-            elif direction == curses.KEY_LEFT:
+            elif self.direction == curses.KEY_LEFT:
                 new_head = [head[0], head[1]-1]
-            elif direction == curses.KEY_UP:
+            elif self.direction == curses.KEY_UP:
                 new_head = [head[0]-1, head[1]]
-            elif direction == curses.KEY_DOWN:
+            elif self.direction == curses.KEY_DOWN:
                 new_head = [head[0]+1, head[1]]
 
             # insert a new head
@@ -238,12 +282,19 @@ class Game:
             """
             if (self.evaluate_field()):
                 msg = "Game Over!"
+                sh, sw = self.stdscr.getmaxyx()
                 self.stdscr.addstr(sh//2, sw//2-len(msg)//2, msg)
                 self.stdscr.nodelay(0)
                 self.stdscr.getch()
                 break
 
             self.stdscr.refresh()
+
+            # Evaluate the level progress
+            lvlup = self.evaluate_level_up()
+            if (lvlup == True):
+                self.progress_to_next_level()
+
             # key = self.stdscr.getch()
 
 
