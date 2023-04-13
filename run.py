@@ -249,4 +249,4 @@ if __name__ == "__main__":
 
     # quit curses and print exception if there was an error
     except Exception as e:
-        print("Exception: " + e)
+        print(e)
