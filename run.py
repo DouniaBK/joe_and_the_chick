@@ -42,7 +42,7 @@ class Game:
 
     def menu_main(self):
 
-        curses.curs_set(0)
+        #curses.curs_set(0)
         curses.init_pair(1, curses.COLOR_GREEN, curses.COLOR_CYAN)
 
         current_row = 0
@@ -141,7 +141,7 @@ class Game:
             return
         # ----- Start Game ----------
         # set up curses
-        curses.curs_set(0)
+        #curses.curs_set(0)
         self.stdscr.erase()
         self.stdscr.nodelay(1)
         self.stdscr.timeout(350)
