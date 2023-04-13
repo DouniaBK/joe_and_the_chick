@@ -225,6 +225,29 @@ class Game:
         chick_with_offset[1] = chick_with_offset[1] + 1
         return (coords_snake_head == chick_with_offset) or (coords_snake_head == coords_chick)
 
+    def snake_ate_stuff(self):
+        """
+        """
+        ate_stuff = False
+        # Snake ate sandwitch
+        if self.fieldItems[self.snake[0][0], self.snake[0][1]] == 2:
+            self.score =+ 2
+            self.print_score()
+            ate_stuff = True
+
+        # Snake got tasered
+        if self.fieldItems[self.snake[0][0], self.snake[0][1]] == 3:
+            self.score =- 1
+            if self.score < 0:
+                self.score = 0
+            self.print_score()
+            ate_stuff = True
+        
+        if ate_stuff == True:
+            self.fieldItems[self.snake[0][0], self.snake[0][1]] = 0
+        
+        
+
     def run(self):
         # ----- Show Menu ----------
         ret_val = self.menu_main()
@@ -271,11 +294,14 @@ class Game:
             self.snake.insert(0, new_head)
             self.stdscr.addstr(10, 10, ' ')
 
+            # Check if the snake ate something besides the chick
+            self.snake_ate_stuff()
+
             # increment the score if snake catches the chick
             # display a new chick after the last one is eaten
             # and increase the lenght of the snake
-            eaten = self.snake_ate_chick(self.snake[0], self.chick)
-            if eaten:
+            ate_chick = self.snake_ate_chick(self.snake[0], self.chick)
+            if ate_chick:
                 # increment score
                 self.score += 1
                 self.print_score()
