@@ -44,7 +44,7 @@ class Game:
         self.stdscr.refresh()
 
     def menu_main(self):
-        # Try block to handle terminal incompatibility 
+        # Try block to handle terminal incompatibility
         # with disabling the cursor. If terminal does not
         # support invisible cursors, as the one provided in the
         # code-institute template, curs_set will return an error.
@@ -52,7 +52,7 @@ class Game:
             curses.curs_set(0)
         except Exception:
             print("Disabling cursor not supported by terminal")
-        
+
         curses.init_pair(1, curses.COLOR_GREEN, curses.COLOR_CYAN)
 
         current_row = 0
@@ -82,14 +82,19 @@ class Game:
     but not on the body of the snake 
     """
 
-    def food_coord(self):
-        coords_chick = None
+    def find_free_coordinate(self):
+        free_coord = None
 
-        while coords_chick is None:
-            coords_chick = [random.randint(
+        while free_coord is None:
+            free_coord = [random.randint(
                 self.box[0][0]+1, self.box[1][0]-1), random.randint(self.box[0][1]+1, self.box[1][1]-1)]
-            if coords_chick in self.snake:
-                coords_chick = None
+            if (free_coord in self.snake) or (self.fieldItems[free_coord[0], free_coord[1]] > 0) or (free_coord == self.chick):
+                free_coord = None
+        return free_coord
+
+    def food_coord(self):
+        coords_chick = self.find_free_coordinate()
+
         return coords_chick
 
     # print score in the middle of the box
@@ -112,22 +117,16 @@ class Game:
 
         return collision
 
-    """
-    Generate a barrier at a random place
-    """
-
     def generate_barrier(self):
-
+        """ Generate a barrier at a random place """
         if self.level == 1:
-            barrier = [random.randint(
-                self.box[0][0]+1, self.box[1][0]-1), random.randint(self.box[0][1]+1, self.box[1][1]-1)]
+            barrier = self.find_free_coordinate()
             self.fieldItems[barrier[0], barrier[1]] = 1
             self.fieldItems[barrier[0], barrier[1]+1] = 1
             self.fieldItems[barrier[0], barrier[1]+2] = 1
-            
+
         if self.level == 2:
-            barrier = [random.randint(
-                self.box[0][0]+1, self.box[1][0]-1), random.randint(self.box[0][1]+1, self.box[1][1]-1)]
+            barrier = self.find_free_coordinate()
             self.fieldItems[barrier[0], barrier[1]] = 1
             self.fieldItems[barrier[0]+1, barrier[1]+1] = 1
             self.fieldItems[barrier[0]+2, barrier[1]+2] = 1
@@ -140,12 +139,29 @@ class Game:
             for y in range(self.fieldItems.shape[1]):
                 if self.fieldItems[x, y] == 1:
                     self.stdscr.addstr(x, y, '▩')
-    
+
+    def generate_reward(self):
+        """ Generate sandwich for joe as a reward to increase score"""
+        if self.level == 1:
+            reward = self.find_free_coordinate()
+            self.fieldItems[reward[0], reward[1]] = 2
+
+        if self.level == 2:
+            reward = self.find_free_coordinate()
+            self.fieldItems[reward[0], reward[1]] = 2
+
+    # Print reward on the field which will increase the score
+    def draw_reward(self):
+        for x in range(self.fieldItems.shape[0]):
+            for y in range(self.fieldItems.shape[1]):
+                if self.fieldItems[x, y] == 2:
+                    self.stdscr.addstr(x, y, '🌯')
+
     def evaluate_level_up(self):
-        if (self.score >= 1):
+        if (self.score >= 4):
             self.level = self.level + 1
             return True
-        
+
         return False
 
     def initialize_field(self):
@@ -165,6 +181,10 @@ class Game:
         self.generate_barrier()
         self.draw_barrier()
 
+        # generate reward and print it on the field
+        self.generate_reward()
+        self.draw_reward()
+
         # set the snake's 3 body parts
         self.snake = [[sh//2, sw//2+1], [sh//2, sh//2], [sh//2, sw//2-1]]
         self.direction = curses.KEY_RIGHT
@@ -180,31 +200,27 @@ class Game:
         # print score
         self.score = 0
         self.print_score()
-        
+
         self.stdscr.timeout(200)
         self.stdscr.refresh()
-
 
     def progress_to_next_level(self):
         msg = "Level up"
         sh, sw = self.stdscr.getmaxyx()
         self.stdscr.addstr(sh//2, sw//2-len(msg)//2, msg)
         self.stdscr.nodelay(0)
-        #key = self.stdscr.getch()
+        # key = self.stdscr.getch()
         self.stdscr.refresh()
         time.sleep(5)
         self.initialize_field()
 
-
-
-    """
-    Determine if the snake ate the chick and return true if so
-    The terminal draws the chick one cell to the left
-    due to the emoji size. This visual offset is
-    compensated for here by extending the radius of possible hits
-    """
-
     def snake_ate_chick(self, coords_snake_head, coords_chick):
+        """
+        Determine if the snake ate the chick and return true if so
+        The terminal draws the chick one cell to the left
+        due to the emoji size. This visual offset is
+        compensated for here by extending the radius of possible hits
+        """
         chick_with_offset = copy.deepcopy(coords_chick)
         chick_with_offset[1] = chick_with_offset[1] + 1
         return (coords_snake_head == chick_with_offset) or (coords_snake_head == coords_chick)
@@ -216,17 +232,16 @@ class Game:
         if not ret_val:
             return
         # ----- Start Game ----------
-        # set up curses
-        # Try block to handle terminal incompatibility 
-        # with disabling the cursor. If terminal does not
-        # support invisible cursors, as the one provided in the
-        # code-institute template, curs_set will return an error.
+        """ Set up curses
+        Try block to handle terminal incompatibility 
+        with disabling the cursor. If terminal does not
+        support invisible cursors, as the one provided in the
+        code-institute template, curs_set will return an error."""
         try:
             curses.curs_set(0)
         except Exception:
             print("Disabling cursor not supported by terminal")
         self.stdscr.nodelay(1)
-
 
         # Initialize the playing field based on the current level
         self.initialize_field()
@@ -271,8 +286,8 @@ class Game:
                 # increase speed of the game
                 self.stdscr.timeout(100 - (len(self.snake)//3) % 90)
             else:
-                # to mimic motion the last part of the head has to be removed and
-                # replaced by a space
+                # to mimic motion the last part of the head has to be removed
+                # and replaced by a space
                 self.stdscr.addstr(self.snake[-1][0], self.snake[-1][1], ' ')
                 self.snake.pop()
             """
