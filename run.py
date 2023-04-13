@@ -116,13 +116,30 @@ class Game:
 
         return collision
 
+
+    def generate_barrier_rectangle(self, x_start_percent, x_end_percent, y_start_percent, y_end_percent):
+        """ Generate a rectangle with the measurements mentioned below 
+        as a barrier """
+        # Draw first rectangle
+        sh, sw = self.stdscr.getmaxyx()
+        
+        x_start_idx = int(np.floor(x_start_percent * sh))
+        x_end_idx = int(np.floor(x_end_percent * sh))
+        y_start_idx = int(np.floor(y_start_percent * sw))
+        y_end_idx = int(np.floor(y_end_percent * sw))
+
+        for x in range(x_start_idx, x_end_idx):
+            for y in range(y_start_idx, y_end_idx):
+                self.fieldItems[x, y] = 1
+
+
+
+
     def generate_barrier(self):
         """ Generate a barrier at a random place """
-        if self.level == 1:
-            barrier = self.find_free_coordinate()
-            self.fieldItems[barrier[0], barrier[1]] = 1
-            self.fieldItems[barrier[0], barrier[1]+1] = 1
-            self.fieldItems[barrier[0], barrier[1]+2] = 1
+        self.generate_barrier_rectangle(0.20, 0.35, 0.25, 0.40)
+        self.generate_barrier_rectangle(0.60, 0.70, 0.7, 0.9)
+        self.generate_barrier_rectangle(0.25, 0.40, 0.55, 0.75)
 
         if self.level == 2:
             barrier = self.find_free_coordinate()
