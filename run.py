@@ -1,12 +1,14 @@
 import curses
 from curses import textpad
-import numpy as np
+import time
 import random
 import copy
-import time
+import numpy as np
 
 
 class Game:
+    """ Initialize game"""
+
     def __init__(self, stdscr):
         curses.noecho()
         self.stdscr = stdscr  # Standardscreen parameter returned by curses
@@ -45,10 +47,12 @@ class Game:
         self.stdscr.refresh()
 
     def menu_main(self):
-        # Try block to handle terminal incompatibility
-        # with disabling the cursor. If terminal does not
-        # support invisible cursors, as the one provided in the
-        # code-institute template, curs_set will return an error.
+        """
+        Try block to handle terminal incompatibility
+        with disabling the cursor. If terminal does not
+        support invisible cursors, as the one provided in the
+        code-institute template, curs_set will return an error.
+        """
         try:
             curses.curs_set(0)
         except Exception:
@@ -78,7 +82,8 @@ class Game:
             self.print_menu(current_row)
 
     """-------------------- Game -----------------------"""
-    def find_free_coordinate(self): 
+
+    def find_free_coordinate(self):
         """
         find the food coordinates making sure it appears inside the box
         but not on the body of the snake """
@@ -96,17 +101,18 @@ class Game:
 
         return coords_chick
 
-    # print score in the middle of the box
     def print_score(self):
+        """print score in the middle of the box"""
         sh, sw = self.stdscr.getmaxyx()
         score_display = "Score: {}".format(self.score)
         self.stdscr.addstr(1, sw//2-len(score_display)//2, score_display)
         self.stdscr.refresh()
 
-    # Check for collision, or whether the snake bit itself
     def evaluate_field(self):
-
-        # Check for collision with border or itself
+        """
+        Check for collision, or whether the snake bit itself
+        Check for collision with border or itself
+        """
         collision = self.snake[0][0] in [self.box[0][0], self.box[1][0]] or self.snake[0][1] in [
             self.box[0][1], self.box[1][1]] or self.snake[0] in self.snake[1:]
 
@@ -116,13 +122,12 @@ class Game:
 
         return collision
 
-
     def generate_barrier_rectangle(self, x_start_percent, x_end_percent, y_start_percent, y_end_percent):
         """ Generate a rectangle with the measurements mentioned below 
         as a barrier """
         # Draw first rectangle
         sh, sw = self.stdscr.getmaxyx()
-        
+
         x_start_idx = int(np.floor(x_start_percent * sh))
         x_end_idx = int(np.floor(x_end_percent * sh))
         y_start_idx = int(np.floor(y_start_percent * sw))
@@ -131,9 +136,6 @@ class Game:
         for x in range(x_start_idx, x_end_idx):
             for y in range(y_start_idx, y_end_idx):
                 self.fieldItems[x, y] = 1
-
-
-
 
     def generate_barrier(self):
         """ Generate a barrier at a random place """
@@ -149,8 +151,8 @@ class Game:
             self.fieldItems[barrier[0]+3, barrier[1]+3] = 1
             self.fieldItems[barrier[0]+4, barrier[1]+4] = 1
 
-    # Print a barrier on the field
     def draw_barrier(self):
+        """Print a barrier on the field"""
         for x in range(self.fieldItems.shape[0]):
             for y in range(self.fieldItems.shape[1]):
                 if self.fieldItems[x, y] == 1:
@@ -166,8 +168,8 @@ class Game:
             reward = self.find_free_coordinate()
             self.fieldItems[reward[0], reward[1]] = 2
 
-    # Print reward on the field which will increase the score
     def draw_reward(self):
+        """ Print reward on the field which will increase the score """
         for x in range(self.fieldItems.shape[0]):
             for y in range(self.fieldItems.shape[1]):
                 if self.fieldItems[x, y] == 2:
@@ -249,13 +251,13 @@ class Game:
         ate_stuff = False
         # Snake ate sandwitch
         if self.fieldItems[self.snake[0][0], self.snake[0][1]] == 2:
-            self.score =+ 2
+            self.score = + 2
             self.print_score()
             ate_stuff = True
 
         # Snake got tasered
         if self.fieldItems[self.snake[0][0], self.snake[0][1]] == 3:
-            self.score =- 1
+            self.score = - 1
             if self.score < 0:
                 self.score = 0
             self.print_score()
@@ -263,10 +265,11 @@ class Game:
 
         if ate_stuff == True:
             self.fieldItems[self.snake[0][0], self.snake[0][1]] = 0
-        
+
     def activate_chick_self_defense(self):
         """
-        Print the lightening bold , representing a taser, right next to the chick
+        Print the lightening bold , representing
+        a taser, right next to the chick
         but if the spot is occupied, don't print
         """
         if self.score >= 0:
@@ -274,21 +277,25 @@ class Game:
             self_defense_coords[0] = self_defense_coords[0] - 1
             self_defense_coords[1] = self_defense_coords[1] + 1
             if self.fieldItems[self_defense_coords[0], self_defense_coords[1]] == 0:
-                self.fieldItems[self_defense_coords[0], self_defense_coords[1]] = 3
-                self.stdscr.addstr(self_defense_coords[0], self_defense_coords[1], '⚡')
+                self.fieldItems[self_defense_coords[0],
+                                self_defense_coords[1]] = 3
+                self.stdscr.addstr(
+                    self_defense_coords[0], self_defense_coords[1], '⚡')
                 self.self_defense_coordinate = self_defense_coords
 
     def deactivate_chick_self_defense(self):
         """ Clean up old chicks self defense weapon """
         if not self.self_defense_coordinate == None:
-            self.stdscr.addstr(self.self_defense_coordinate[0], self.self_defense_coordinate[1], ' ')
+            self.stdscr.addstr(
+                self.self_defense_coordinate[0], self.self_defense_coordinate[1], ' ')
             self.self_defense_coordinate = None
             self.stdscr.refresh()
 
     def run(self):
         # ----- Show Menu ----------
         ret_val = self.menu_main()
-        # menu_main returns true or false, to continue or quit the game respectively
+        # menu_main returns true or false,
+        # to continue or quit the game respectively
         if not ret_val:
             return
         # ----- Start Game ----------
@@ -351,7 +358,7 @@ class Game:
                 self.stdscr.addstr(self.chick[0], self.chick[1], '🐤')
                 self.activate_chick_self_defense()
                 # increase speed of the game
-                #self.stdscr.timeout(100 - (len(self.snake)//3) % 90)
+                # self.stdscr.timeout(100 - (len(self.snake)//3) % 90)
             else:
                 # to mimic motion the last part of the head has to be removed
                 # and replaced by a space
