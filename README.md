@@ -52,3 +52,7 @@ Furthermore, this game is meant to be played in between breaks to relax, have fu
 < add game screenshot>
 
 The design of the game is clean and playful adhedring to the character of Joe Tribiani's, from Friends, personality traits. The use of emojies and unicode characters inpspire inner playfulness and encourage the player to continue playing. The game field is a pad created using curses. It displays clean borders for the gamer to not cross. 
+
+## Bugs
+* Although executing properly within Gitpod, the command to disable the terminals cursor "curses.curs_set(0)" returns an error in the deployed version on heroku, which means that the supplied terminal implementation does not support disabling the cursor.
+The cursor will therefore be visible in the deployed version of the app, while being invisible on a local or Gitpod terminal. 

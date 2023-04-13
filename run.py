@@ -41,8 +41,13 @@ class Game:
         self.stdscr.refresh()
 
     def menu_main(self):
-
-        #curses.curs_set(0)
+        # Try block to handle terminal incompatibility 
+        # with disabling the cursor
+        try:
+            curses.curs_set(0)
+        except Exception:
+            print("curses.curs_set(0) not supported")
+        
         curses.init_pair(1, curses.COLOR_GREEN, curses.COLOR_CYAN)
 
         current_row = 0
@@ -141,7 +146,13 @@ class Game:
             return
         # ----- Start Game ----------
         # set up curses
-        #curses.curs_set(0)
+        # Try block to handle terminal incompatibility 
+        # with disabling the cursor
+        try:
+            curses.curs_set(0)
+        except Exception:
+            print("curses.curs_set(0) not supported")
+        
         self.stdscr.erase()
         self.stdscr.nodelay(1)
         self.stdscr.timeout(350)
@@ -199,6 +210,7 @@ class Game:
             # insert a new head
             self.stdscr.addstr(new_head[0], new_head[1], '▓')
             self.snake.insert(0, new_head)
+            self.stdscr.addstr(10, 10, ' ')
 
             # increment the score if snake catches the chick
             # display a new chick after the last one is eaten
@@ -248,5 +260,5 @@ if __name__ == "__main__":
         curses.wrapper(main)
 
     # quit curses and print exception if there was an error
-    except Exception as e:
-        print(e)
+    except Exception:
+        print(Exception)
