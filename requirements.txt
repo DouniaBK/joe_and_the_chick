@@ -1,1 +1,1 @@
-# Your requirements go here
+numpy==1.24.2
