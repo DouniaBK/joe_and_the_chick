@@ -248,5 +248,5 @@ if __name__ == "__main__":
         curses.wrapper(main)
 
     # quit curses and print exception if there was an error
-    except Exception:
-        print("Exception")
+    except Exception as e:
+        print("Exception: " + e)
