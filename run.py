@@ -139,17 +139,15 @@ class Game:
 
     def generate_barrier(self):
         """ Generate a barrier at a random place """
-        self.generate_barrier_rectangle(0.20, 0.35, 0.25, 0.40)
-        self.generate_barrier_rectangle(0.60, 0.70, 0.7, 0.9)
-        self.generate_barrier_rectangle(0.25, 0.40, 0.55, 0.75)
+        if self.level == 1:
+            self.generate_barrier_rectangle(0.20, 0.26, 0.08, 0.50)
+            self.generate_barrier_rectangle(0.70, 0.75, 0.08, 0.70)
+            self.generate_barrier_rectangle(0.40, 0.45, 0.4, 0.95)
 
         if self.level == 2:
-            barrier = self.find_free_coordinate()
-            self.fieldItems[barrier[0], barrier[1]] = 1
-            self.fieldItems[barrier[0]+1, barrier[1]+1] = 1
-            self.fieldItems[barrier[0]+2, barrier[1]+2] = 1
-            self.fieldItems[barrier[0]+3, barrier[1]+3] = 1
-            self.fieldItems[barrier[0]+4, barrier[1]+4] = 1
+            self.generate_barrier_rectangle(0.20, 0.26, 0.08, 0.50)
+            self.generate_barrier_rectangle(0.70, 0.75, 0.08, 0.70)
+            self.generate_barrier_rectangle(0.40, 0.45, 0.4, 0.95)
 
     def draw_barrier(self):
         """Print a barrier on the field"""
@@ -204,6 +202,7 @@ class Game:
         self.draw_reward()
 
         # set the snake's 3 body parts
+
         self.snake = [[sh//2, sw//2+1], [sh//2, sh//2], [sh//2, sw//2-1]]
         self.direction = curses.KEY_RIGHT
 
@@ -246,7 +245,7 @@ class Game:
     def snake_ate_stuff(self):
         """
         Detect if snake ate a sandwich and reward two points
-        Detect if snake ate taser and derement one point
+        Detect if snake ate taser and decrement one point
         """
         ate_stuff = False
         # Snake ate sandwitch
