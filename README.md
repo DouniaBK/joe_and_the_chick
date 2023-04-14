@@ -13,7 +13,6 @@ Joe and the chick is a simple snake game with level design architecture and stor
 * Data Models
 ## Technologies Used
 * Languages
-* Frameworks
 * Libraries
 * Packages
 * Platforms
@@ -64,8 +63,8 @@ The characters in the game are:
     * Barrier ▩
 
 ### Features
-* Page Elements
-* Additional Features
+
+#### Game Elements:
 
 * Emojis:
 
@@ -77,13 +76,13 @@ Emoticons are wildly used among the targeted players of this game, they can be u
 
 * Chick 🐤:
 
-    The chick is worth the chase as it rewards 1 point but can also hurt the score if armed. The chick will appear on the field where a spot is free and conitnously reappears after being cought.
+    The chick is worth the chase as it rewards 1 point but can also hurt the score if armed. The chick will appear on the field where a spot is free and conitnously reappears after being cought. 
 
 * Taser ⚡:
 
     The taser is a weapon that will appear north of the chick giving the elusion that the chick is carrying it. The snake needs to navigate to the chick without touching the taser or the score will decrease of one point. However, if the score is at 0, it will remain as so. The taser is activated and then deactivated after being cought thus it will not continously accompany the chick.
 
-* Speed :
+* Speed:
 
    The speed of the snake will increase as the score increases making it more challenging to navigate the field and catch the chick.
 
@@ -91,7 +90,7 @@ Emoticons are wildly used among the targeted players of this game, they can be u
 
     The Sandwich is a reward that will randomly appear on free coordinates in the field for Joe to give him a booster point.
 
-* Field :
+* Field:
 
     The field is a rectangle textpad created using curses. 
 
@@ -103,30 +102,76 @@ Emoticons are wildly used among the targeted players of this game, they can be u
     
     The coffee mug is a trap that gives joe super speed leading to a challenging navigation in the game. Thankfully, it will only last few seconds.
 
-* Features Not Yet Implemented
+* The score:
 
+    It is displayed outside of the game field and it increments everytime the player scores or looses points. The score of the player, also determines the level of the game:
 
+* The level design:
 
+    The game is designed with three levels in mind. As the player scores 4 points, he moves to the next second level and with the score of greater than 8, he moves to the third and final level. Each level is designed differently. The speed increases, the barrier maze changes, new items appear on the field making the game more and more challenging.
 
+#### Additional Features
+  The menu:
+    * Home allows the player to pause the game, return to the menu and choose an item from the menu such as Legend
+    * Play allows the player to enter the game
+    * Legend detailed instructions on how to play the game
+    * Exit allows the player to end the game.
+    * Cursor feature has a try block to handle terminal incompatibility with disabling the cursor
+    * Function that find item coordinates making sure it appears inside the box but not on the body of the snake
+### Features Not Yet Implemented
+  * Two players version (Joe and Chandler or Joe and Ross)
+  * The chick avert the snake
+  * The taser moves around the chick for better protection
+  * Rival that hinders the chick chase.
+  * The chick is not interested in Joe but rather Monica.
 
+## Information Architecture
+* Database Structure
+## Data Models
+The game class is devided into three section:
+* Initializing the game set up 
 
+* Menu section: includes functions that will generate, print and design the menu. including a try block to handle terminal incompatibility with disabling the cursor
 
+* Game section: includes various functions that handle the logic of the game from checking coordinates availability, collision, generating and printing items, incrementing score and evaluating level design architecture.
 
+* Run the game section: 
+## Technologies Used
+### Languages
+    Python
 
-
-
-
+### Libraries
+ Curses :
+ Find the link [here](https://docs.python.org/3/howto/curses.html) for a detailed description.
+### Packages
+    Numpy
+     Random
+     Time
+### Platforms
+ **Github**
+ * Storing code remotely and deployment.
+ **Gitpod**
+ * IDE for project development.
+* Other Tools
+**Wikipedia**
+ * For emojis and unicode characters 
 ## Bugs
-* Although executing properly within Gitpod, the command to disable the terminals cursor "curses.curs_set(0)" returns an error in the deployed version on heroku, which means that the supplied terminal implementation does not support disabling the cursor.
+
+### Curser
+
+* Bug: Although executing properly within Gitpod, the command to disable the terminals cursor "curses.curs_set(0)" returns an error in the deployed version on heroku, which means that the supplied Code Institute terminal implementation does not support disabling the cursor.
 The cursor will therefore be visible in the deployed version of the app, while being invisible on a local or Gitpod terminal. 
+* Fix: Try block to handle terminal incompatibility with disabling the cursor. If terminal does not support invisible cursors, as the one provided in the code-institute template, curs_set will return an error.
 
+### Chick Emoji
+ * Bug: Due to the size of the chick emoji, the collision between the snake the chick was not being registered. Visually the player thinks he has hit the target but computationaly it did not due to an offset.
+ * Fix: Determine if the snake ate the chick and return true if so The terminal draws the chick one cell to the left due to the emoji size. This visual offset is compensated for here by extending the radius of possible target hits.
 
+### Taser
 
-Next steps:
-level 1
+Bug: appears on other items
+Fix: appear only if north of the chick is free
 
-
-level 2
-
-
-level 3
+## Deployment
+* Local Deployment
+* Heroku Deployment

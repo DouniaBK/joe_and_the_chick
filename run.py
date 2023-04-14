@@ -17,10 +17,15 @@ class Game:
         self.box = []
         self.score = 0
         self.level = 1
-        self.menu = ['Home', 'Play', 'Settings', 'Exit']
+        self.menu = ['Home', 'Play', 'Legend', 'Exit']
         self.direction = curses.KEY_RIGHT
         self.fieldItems = []
         self.self_defense_coordinate = None
+
+        self.min_x = 0
+        self.max_x = 0
+        self.min_y = 0
+        self.max_y = 0
 
     """-------------------- MENU -----------------------"""
 
@@ -39,6 +44,7 @@ class Game:
         self.stdscr.refresh()
 
     def print_center(self, text):
+        """ Print menu in the center of the terminal"""
         self.stdscr.clear()
         h, w = self.stdscr.getmaxyx()
         x = w//2 - len(text)//2
@@ -56,13 +62,13 @@ class Game:
         try:
             curses.curs_set(0)
         except Exception:
-            print("Disabling cursor not supported by terminal")
+            print("Disabling cursor not supported by terminal provided by Code Institute")
 
         curses.init_pair(1, curses.COLOR_GREEN, curses.COLOR_CYAN)
 
         current_row = 0
         self.print_menu(current_row)
-
+        # handle menu item selection
         while 1:
             key = self.stdscr.getch()
 
@@ -91,7 +97,7 @@ class Game:
 
         while free_coord is None:
             free_coord = [random.randint(
-                self.box[0][0]+1, self.box[1][0]-1), random.randint(self.box[0][1]+1, self.box[1][1]-1)]
+                self.box[0][0]+4, self.box[1][0]-4), random.randint(self.box[0][1]+4, self.box[1][1]-4)]
             if (free_coord in self.snake) or (self.fieldItems[free_coord[0], free_coord[1]] > 0) or (free_coord == self.chick):
                 free_coord = None
         return free_coord
@@ -102,7 +108,7 @@ class Game:
         return coords_chick
 
     def print_score(self):
-        """print score in the middle of the box"""
+        """print score in the top center of the terminal outside the field"""
         sh, sw = self.stdscr.getmaxyx()
         score_display = "Score: {}".format(self.score)
         self.stdscr.addstr(1, sw//2-len(score_display)//2, score_display)
@@ -139,21 +145,27 @@ class Game:
 
     def generate_barrier(self):
         """ Generate a barrier at a random place """
-        if self.level == 1:
-            self.generate_barrier_rectangle(0.20, 0.26, 0.08, 0.50)
-            self.generate_barrier_rectangle(0.70, 0.75, 0.08, 0.70)
-            self.generate_barrier_rectangle(0.40, 0.45, 0.4, 0.95)
-
         if self.level == 2:
-            self.generate_barrier_rectangle(0.20, 0.26, 0.08, 0.50)
-            self.generate_barrier_rectangle(0.70, 0.75, 0.08, 0.70)
-            self.generate_barrier_rectangle(0.40, 0.45, 0.4, 0.95)
+            self.generate_barrier_rectangle(0.20, 0.26, 0.0, 0.50)
+            self.generate_barrier_rectangle(0.70, 0.75, 0.0, 0.70)
+            self.generate_barrier_rectangle(0.40, 0.45, 0.4, 1)
+
+        if self.level == 1:
+            self.generate_barrier_rectangle(0.20, 0.26, 0.0, 0.40)
+            self.generate_barrier_rectangle(0.70, 0.75, 0.0, 0.40)
+            self.generate_barrier_rectangle(0.20, 0.26, 0.6, 1)
+            self.generate_barrier_rectangle(0.70, 0.75, 0.6, 1)
+            self.generate_barrier_rectangle(0.00, 0.45, 0.48, 0.53)
+            self.generate_barrier_rectangle(0.55, 1, 0.48, 0.53)
+
+    def is_within_barriers(self, x, y):
+        return (x < self.max_x) and (x > self.min_x) and (y < self.max_y) and (y > self.min_y)
 
     def draw_barrier(self):
         """Print a barrier on the field"""
         for x in range(self.fieldItems.shape[0]):
             for y in range(self.fieldItems.shape[1]):
-                if self.fieldItems[x, y] == 1:
+                if self.fieldItems[x, y] == 1 and self.is_within_barriers(x, y):
                     self.stdscr.addstr(x, y, '▩')
 
     def generate_reward(self):
@@ -170,10 +182,11 @@ class Game:
         """ Print reward on the field which will increase the score """
         for x in range(self.fieldItems.shape[0]):
             for y in range(self.fieldItems.shape[1]):
-                if self.fieldItems[x, y] == 2:
+                if self.fieldItems[x, y] == 2 and self.is_within_barriers(x, y):
                     self.stdscr.addstr(x, y, '🌯')
 
     def evaluate_level_up(self):
+        """ check the score and evaluate the level accordingly"""
         if (self.score >= 4):
             self.level = self.level + 1
             return True
@@ -186,7 +199,13 @@ class Game:
         self.stdscr.nodelay(1)
         # create the textpad rectangle where the field goes
         sh, sw = self.stdscr.getmaxyx()
-        self.box = [[3, 3], [sh-3, sw-3]]
+        
+        self.min_x = 3
+        self.max_x = sh-3
+        self.min_y = 3
+        self.max_y = sw-3
+
+        self.box = [[self.min_x, self.min_y], [ self.max_x,  self.max_y]]
         textpad.rectangle(
             self.stdscr, self.box[0][0], self.box[0][1], self.box[1][0], self.box[1][1])
 
@@ -202,7 +221,6 @@ class Game:
         self.draw_reward()
 
         # set the snake's 3 body parts
-
         self.snake = [[sh//2, sw//2+1], [sh//2, sh//2], [sh//2, sw//2-1]]
         self.direction = curses.KEY_RIGHT
 
@@ -218,11 +236,12 @@ class Game:
         self.score = 0
         self.print_score()
 
-        self.stdscr.timeout(400)
+        self.stdscr.timeout(180)
         self.stdscr.refresh()
 
     def progress_to_next_level(self):
-        msg = "Level up"
+        """ Allow progress to next level"""
+        msg = "How you doing? Leveling up, player."
         sh, sw = self.stdscr.getmaxyx()
         self.stdscr.addstr(sh//2, sw//2-len(msg)//2, msg)
         self.stdscr.nodelay(0)
@@ -284,13 +303,14 @@ class Game:
 
     def deactivate_chick_self_defense(self):
         """ Clean up old chicks self defense weapon """
-        if not self.self_defense_coordinate == None:
+        if self.self_defense_coordinate is not None:
             self.stdscr.addstr(
                 self.self_defense_coordinate[0], self.self_defense_coordinate[1], ' ')
             self.self_defense_coordinate = None
             self.stdscr.refresh()
 
     def run(self):
+        """ Run the program"""
         # ----- Show Menu ----------
         ret_val = self.menu_main()
         # menu_main returns true or false,
@@ -357,7 +377,7 @@ class Game:
                 self.stdscr.addstr(self.chick[0], self.chick[1], '🐤')
                 self.activate_chick_self_defense()
                 # increase speed of the game
-                # self.stdscr.timeout(100 - (len(self.snake)//3) % 90)
+                self.stdscr.timeout(100 - (len(self.snake)//3) % 90)
             else:
                 # to mimic motion the last part of the head has to be removed
                 # and replaced by a space
