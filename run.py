@@ -1,3 +1,4 @@
+
 import curses
 from curses import textpad
 import time
@@ -20,6 +21,7 @@ class Game:
         self.menu = ['Home', 'Play', 'Legend', 'Exit']
         self.direction = curses.KEY_RIGHT
         self.fieldItems = []
+        self.speed = 200
         self.self_defense_coordinate = None
 
         self.min_x = 0
@@ -144,19 +146,43 @@ class Game:
                 self.fieldItems[x, y] = 1
 
     def generate_barrier(self):
-        """ Generate a barrier at a random place """
-        if self.level == 2:
+        """ 
+        Generate a barrier
+        Coodinates are calculated in percent
+        Mug appears between the mid-center barriers
+        """
+        if self.level == 1:
             self.generate_barrier_rectangle(0.20, 0.26, 0.0, 0.50)
             self.generate_barrier_rectangle(0.70, 0.75, 0.0, 0.70)
             self.generate_barrier_rectangle(0.40, 0.45, 0.4, 1)
 
-        if self.level == 1:
+        if self.level == 2:
             self.generate_barrier_rectangle(0.20, 0.26, 0.0, 0.40)
             self.generate_barrier_rectangle(0.70, 0.75, 0.0, 0.40)
             self.generate_barrier_rectangle(0.20, 0.26, 0.6, 1)
             self.generate_barrier_rectangle(0.70, 0.75, 0.6, 1)
             self.generate_barrier_rectangle(0.00, 0.45, 0.48, 0.53)
             self.generate_barrier_rectangle(0.55, 1, 0.48, 0.53)
+
+            # Add a coffee mug to the level
+            sh, sw = self.stdscr.getmaxyx()
+            coffee_mug = [int(np.ceil(0.45 * sh)), sw//2]
+            self.fieldItems[coffee_mug[0], coffee_mug[1]] = 4
+            self.stdscr.addstr(coffee_mug[0], coffee_mug[1], '☕')
+
+        if self.level == 3:
+            self.generate_barrier_rectangle(0.20, 0.26, 0.0, 0.40)
+            self.generate_barrier_rectangle(0.70, 0.75, 0.0, 0.40)
+            self.generate_barrier_rectangle(0.20, 0.26, 0.6, 1)
+            self.generate_barrier_rectangle(0.70, 0.75, 0.6, 1)
+            self.generate_barrier_rectangle(0.15, 0.9, 0.48, 0.53)
+            self.generate_barrier_rectangle(0.48, 0.53, 0.1, 0.9)
+
+            # Add a coffee mug to the level
+            sh, sw = self.stdscr.getmaxyx()
+            coffee_mug = [int(np.ceil(0.95 * (sh-3))), sw//2]
+            self.fieldItems[coffee_mug[0], coffee_mug[1]] = 4
+            self.stdscr.addstr(coffee_mug[0], coffee_mug[1], '☕')
 
     def is_within_barriers(self, x, y):
         return (x < self.max_x) and (x > self.min_x) and (y < self.max_y) and (y > self.min_y)
@@ -170,13 +196,8 @@ class Game:
 
     def generate_reward(self):
         """ Generate sandwich for joe as a reward to increase score"""
-        if self.level == 1:
-            reward = self.find_free_coordinate()
-            self.fieldItems[reward[0], reward[1]] = 2
-
-        if self.level == 2:
-            reward = self.find_free_coordinate()
-            self.fieldItems[reward[0], reward[1]] = 2
+        reward = self.find_free_coordinate()
+        self.fieldItems[reward[0], reward[1]] = 2
 
     def draw_reward(self):
         """ Print reward on the field which will increase the score """
@@ -187,7 +208,7 @@ class Game:
 
     def evaluate_level_up(self):
         """ check the score and evaluate the level accordingly"""
-        if (self.score >= 4):
+        if (self.score >= 5):
             self.level = self.level + 1
             return True
 
@@ -205,7 +226,7 @@ class Game:
         self.min_y = 3
         self.max_y = sw-3
 
-        self.box = [[self.min_x, self.min_y], [ self.max_x,  self.max_y]]
+        self.box = [[self.min_x, self.min_y], [self.max_x,  self.max_y]]
         textpad.rectangle(
             self.stdscr, self.box[0][0], self.box[0][1], self.box[1][0], self.box[1][1])
 
@@ -221,8 +242,10 @@ class Game:
         self.draw_reward()
 
         # set the snake's 3 body parts
-        self.snake = [[sh//2, sw//2+1], [sh//2, sh//2], [sh//2, sw//2-1]]
+        self.snake = [[sh//2, sw//2+1], [sh//2, sw//2], [sh//2, sw//2-1]]
         self.direction = curses.KEY_RIGHT
+        if self.level == 3:
+            self.snake = [[int(0.1 * sh), sw//2+1], [int(0.1 * sh), sw//2], [int(0.1 * sh), sw//2-1]]
 
         # draw snake's body with a character emoji
         for y, x in self.snake:
@@ -235,8 +258,15 @@ class Game:
         # print score
         self.score = 0
         self.print_score()
+        #  set speed
+        if self.level == 1:
+            self.speed = 200
+        elif self.level == 2:
+            self.speed = 150
+        elif self.level == 3:
+            self.speed = 100
+        self.stdscr.timeout(self.speed)
 
-        self.stdscr.timeout(180)
         self.stdscr.refresh()
 
     def progress_to_next_level(self):
@@ -280,8 +310,14 @@ class Game:
                 self.score = 0
             self.print_score()
             ate_stuff = True
+        
+        # Snake drunk coffee and got hyper speed
+        if self.fieldItems[self.snake[0][0], self.snake[0][1]] == 4:
+            self.speed = int(self.speed / 2)
+            self.stdscr.timeout(self.speed)
+            ate_stuff = True
 
-        if ate_stuff == True:
+        if ate_stuff is True:
             self.fieldItems[self.snake[0][0], self.snake[0][1]] = 0
 
     def activate_chick_self_defense(self):
@@ -377,7 +413,8 @@ class Game:
                 self.stdscr.addstr(self.chick[0], self.chick[1], '🐤')
                 self.activate_chick_self_defense()
                 # increase speed of the game
-                self.stdscr.timeout(100 - (len(self.snake)//3) % 90)
+                self.speed = int(self.speed * 0.8)
+                self.stdscr.timeout(self.speed)
             else:
                 # to mimic motion the last part of the head has to be removed
                 # and replaced by a space
@@ -400,7 +437,7 @@ class Game:
 
             # Evaluate the level progress
             lvlup = self.evaluate_level_up()
-            if (lvlup == True):
+            if (lvlup is True):
                 self.progress_to_next_level()
 
             # key = self.stdscr.getch()

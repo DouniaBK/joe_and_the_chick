@@ -39,6 +39,7 @@ The game revolves around the character of Joe Tribiani from Friends. The Snake (
     * Catch a chick (🐤) to score points
     * Eat a pastrami Sandwich (🌯) to regain force and score 2 points
     * Avoid being tasered (⚡) and lose 1 point
+    * Cofee mug ☕ increase speed by factor of 2  
     * Stay away from barriers (▩) and borders or instant death it is
     * Abstain from biting oneself
     * Have fun
@@ -48,10 +49,10 @@ The game is played using the following keys:
 2. KEY_DOWN to move downward
 3. KEY_RIGHT to move right
 4. KEY_LEFT to move upward
-5. Press X to exit
-6. Press H to Menu
+5. Press X to exit ------
+6. Press H to Menu ------
 7. Enter to select
-8. Press P to pause the game
+8. Press P to pause the game ------
 
 ### Visual Design
 
@@ -76,6 +77,7 @@ The characters in the game are:
 * Pastrami Sandwich🌯 rewards 2 points
 * Taser ⚡decrement 1 point
 * Barrier ▩ instant death
+* Cofee mug ☕ increase speed by factor of 2
 
 ### Features
 
@@ -109,9 +111,9 @@ The characters in the game are:
 
  The barriers are specifically designed for each level. As the player increases his score, the barriers will change position and shape to create a maze-like environment. The barriers will appear in specific coordinates where nor the snake or the other features are to avoid a premature end of the game.
 
- * Coffee mug:
+ * Coffee mug ☕:
     
-    The coffee mug is a trap that gives joe super speed leading to a challenging navigation in the game. Thankfully, it will only last few seconds.
+    The coffee mug is a trap that gives joe super speed leading to a challenging navigation in the game. The speed is increased by factor 2.
 
 * The score:
 
