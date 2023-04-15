@@ -68,7 +68,7 @@ class Game:
 
         for idx, row in enumerate(how_to_play):
             x = w//2 - len(row)//2
-            y = h//2 - len(self.menu)//2 + idx
+            y = 1 + idx
             self.stdscr.addstr(y, x, row)
 
         self.stdscr.refresh()
