@@ -38,11 +38,11 @@ The game revolves around the character of Joe Tribiani from Friends. The Snake (
 
     * Catch a chick (🐤) to score points
     * Eat a pastrami Sandwich (🌯) to regain force and score 2 points
-    * Avoid being tasered (⚡) and lose 1 point
-    * Cofee mug ☕ increase speed by factor of 2  
+    * Avoid being tasered (⚡) by a chick and lose 1 point
+    * Coffee mug ☕ increases speed
     * Stay away from barriers (▩) and borders or instant death it is
     * Abstain from biting oneself
-    * Have fun
+    * Have fun!
 
 The game is played using the following keys:
 1. KEY_UP to move upward

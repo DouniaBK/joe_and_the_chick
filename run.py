@@ -19,12 +19,11 @@ class Game:
         self.score = 0
         self.level = 1
         self.menu = ['Home', 'Play', 'Legend', 'Exit']
-        self.welc_msg = ['☕  Welcome to Joe and the chick  🐤', 'Choose play to start or Legend to read the game instructions']
+        self.welc_msg = ['☕ Welcome to Joe and the chick 🐤', 'If you got game with the chicks, select Play or go to Legend for game instructions']
         self.direction = curses.KEY_RIGHT
         self.fieldItems = []
         self.speed = 200
         self.self_defense_coordinate = None
-
         self.min_x = 0
         self.max_x = 0
         self.min_y = 0
@@ -50,6 +49,30 @@ class Game:
             else:
                 self.stdscr.addstr(y, x, row)
         self.stdscr.refresh()
+    
+    def print_legend(self):
+        self.stdscr.clear()
+
+        h, w = self.stdscr.getmaxyx()
+        how_to_play = ["LEGEND", "", "You think you got game with chicks?!", "", "", 
+        "This game is inspired by the ultimate player, Joe Tribiani from Friends.", "", 
+        "The Snake (▓) plays the role of Joe who has to:", "", 
+        "Get chicks (🐤) to score points.",
+        "Eat a pastrami Sandwich (🌯) to regain force and score 2 points.",
+        "But beware of traps, player!",
+        "Get the karate-chick (🐤⚡) without being tasered (⚡) and lose 1 point.",
+        "Stay away from coffee (☕), it makes you hyper.","Also, keep your foot out of your mouth", "and stay away from barriers (▩▩▩▩) or instant death, it is.", "" ,"Now, have fun chasing chicks!", "", "To play the game use your arrow keys to move the snake."
+        , "Press X to exit the game.", "", "From Legend, Press any key to return to the main menu."]
+
+        for idx, row in enumerate(how_to_play):
+            x = w//2 - len(row)//2
+            y = h//2 - len(self.menu)//2 + idx
+            self.stdscr.addstr(y, x, row)
+
+        self.stdscr.refresh()
+
+        key = self.stdscr.getch()
+
 
     def print_center(self, text):
         """ Print menu in the center of the terminal"""
@@ -88,6 +111,9 @@ class Game:
 
                 if self.menu[current_row] == 'Play':
                     return True
+
+                if self.menu[current_row] == 'Legend':
+                    self.print_legend()
 
                 if self.menu[current_row] == 'Exit':
                     return False
@@ -276,9 +302,9 @@ class Game:
         if self.level == 1:
             self.speed = 200
         elif self.level == 2:
-            self.speed = 160
+            self.speed = 180
         elif self.level == 3:
-            self.speed = 130
+            self.speed = 160
         self.stdscr.timeout(self.speed)
 
         self.stdscr.refresh()
