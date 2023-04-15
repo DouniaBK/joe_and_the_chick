@@ -133,13 +133,11 @@ class Game:
     def generate_barrier_rectangle(self, x_start_percent, x_end_percent, y_start_percent, y_end_percent):
         """ Generate a rectangle with the measurements mentioned below 
         as a barrier """
-        # Draw first rectangle
-        sh, sw = self.stdscr.getmaxyx()
 
-        x_start_idx = int(np.floor(x_start_percent * sh))
-        x_end_idx = int(np.floor(x_end_percent * sh))
-        y_start_idx = int(np.floor(y_start_percent * sw))
-        y_end_idx = int(np.floor(y_end_percent * sw))
+        x_start_idx = int(np.floor(x_start_percent * (self.max_x - self.min_x))) + self.min_x
+        x_end_idx = int(np.floor(x_end_percent * (self.max_x - self.min_x))) + self.min_x
+        y_start_idx = int(np.floor(y_start_percent * (self.max_y - self.min_y))) + self.min_y
+        y_end_idx = int(np.floor(y_end_percent * (self.max_y - self.min_y))) + self.min_y
 
         for x in range(x_start_idx, x_end_idx):
             for y in range(y_start_idx, y_end_idx):
@@ -157,12 +155,12 @@ class Game:
             self.generate_barrier_rectangle(0.40, 0.45, 0.4, 1)
 
         if self.level == 2:
-            # self.generate_barrier_rectangle(0.20, 0.26, 0.0, 0.40)
-            # self.generate_barrier_rectangle(0.70, 0.75, 0.0, 0.40)
-            # self.generate_barrier_rectangle(0.20, 0.26, 0.6, 1)
-            # self.generate_barrier_rectangle(0.70, 0.75, 0.6, 1)
-            # self.generate_barrier_rectangle(0.00, 0.45, 0.48, 0.53)
-            # self.generate_barrier_rectangle(0.55, 1, 0.48, 0.53)
+            self.generate_barrier_rectangle(0.20, 0.26, 0.0, 0.40)
+            self.generate_barrier_rectangle(0.70, 0.75, 0.0, 0.40)
+            self.generate_barrier_rectangle(0.20, 0.26, 0.6, 1)
+            self.generate_barrier_rectangle(0.70, 0.75, 0.6, 1)
+            self.generate_barrier_rectangle(0.00, 0.45, 0.48, 0.53)
+            self.generate_barrier_rectangle(0.55, 1, 0.48, 0.53)
 
             # Add a coffee mug to the level
             sh, sw = self.stdscr.getmaxyx()
