@@ -296,12 +296,17 @@ class Game:
         Detect if snake ate a sandwich and reward two points
         Detect if snake ate taser and decrement one point
         """
-        ate_stuff = False
+
         # Snake ate sandwitch
         if self.fieldItems[self.snake[0][0], self.snake[0][1]] == 2:
             self.score = + 2
             self.print_score()
-            ate_stuff = True
+            self.fieldItems[self.snake[0][0], self.snake[0][1]] = 0
+
+        elif self.fieldItems[self.snake[0][0], self.snake[0][1] - 1] == 2:
+            self.score = + 2
+            self.print_score()
+            self.fieldItems[self.snake[0][0], self.snake[0][1] - 1] = 0
 
         # Snake got tasered
         if self.fieldItems[self.snake[0][0], self.snake[0][1]] == 3:
@@ -309,23 +314,44 @@ class Game:
             if self.score < 0:
                 self.score = 0
             self.print_score()
-            ate_stuff = True
+            self.fieldItems[self.snake[0][0], self.snake[0][1]] = 0
+
+        elif self.fieldItems[self.snake[0][0], self.snake[0][1] - 1] == 3:
+            self.score = - 1
+            if self.score < 0:
+                self.score = 0
+            self.print_score()
+            self.fieldItems[self.snake[0][0], self.snake[0][1] - 1] = 0
         
         # Snake drunk coffee and got hyper speed
         if self.fieldItems[self.snake[0][0], self.snake[0][1]] == 4:
             self.speed = int(self.speed / 2)
             self.stdscr.timeout(self.speed)
-            ate_stuff = True
-
-        if ate_stuff is True:
             self.fieldItems[self.snake[0][0], self.snake[0][1]] = 0
+
+        elif self.fieldItems[self.snake[0][0], self.snake[0][1] - 1] == 4:
+            self.speed = int(self.speed / 2)
+            self.stdscr.timeout(self.speed)
+            self.fieldItems[self.snake[0][0], self.snake[0][1] - 1] = 0
+
+            
 
     def activate_chick_self_defense(self):
         """
         Print the lightening bold , representing
-        a taser, right next to the chick
+        a taser, right next to the chick starting level 2
         but if the spot is occupied, don't print
+        Generate self defense about 50% of time for level 2
         """
+        if self.level == 1:
+            return
+
+        # For level 2 generates the self defense about 50% of time
+        if self.level == 2:
+            result = random.randint(0, 10) 
+            if result < 6:
+                return
+
         if self.score >= 0:
             self_defense_coords = copy.deepcopy(self.chick)
             self_defense_coords[0] = self_defense_coords[0] - 1
@@ -413,7 +439,7 @@ class Game:
                 self.stdscr.addstr(self.chick[0], self.chick[1], '🐤')
                 self.activate_chick_self_defense()
                 # increase speed of the game
-                self.speed = int(self.speed * 0.8)
+                self.speed = int(self.speed * 0.9)
                 self.stdscr.timeout(self.speed)
             else:
                 # to mimic motion the last part of the head has to be removed

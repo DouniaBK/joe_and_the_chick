@@ -183,8 +183,19 @@ The cursor will therefore be visible in the deployed version of the app, while b
 
 ### Taser
 
-Bug: appears on other items
-Fix: appear only if north of the chick is free
+* Bug: appears on other items
+* Fix: appear only if north of the chick is free
+
+* Bug/problem: appeared too often and thus made the game too hard
+* Fix: add aprobability of 50% of appearance
+
+### General for all Emojis
+* Bug: Emojis visually occupy more than one cell within the terminal, which leads to incorrect 
+detection behavior.
+* Fix: This terminal drawing behavior needed to be taken into account during collision detection. 
+
+
+
 
 ## Deployment
 * Local Deployment
