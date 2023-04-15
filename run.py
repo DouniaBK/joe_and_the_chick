@@ -19,6 +19,7 @@ class Game:
         self.score = 0
         self.level = 1
         self.menu = ['Home', 'Play', 'Legend', 'Exit']
+        self.welc_msg = ['☕  Welcome to Joe and the chick  🐤', 'Choose play to start or Legend to read the game instructions']
         self.direction = curses.KEY_RIGHT
         self.fieldItems = []
         self.speed = 200
@@ -33,7 +34,13 @@ class Game:
 
     def print_menu(self, selected_row_idx):
         self.stdscr.clear()
+
         h, w = self.stdscr.getmaxyx()
+
+        self.stdscr.addstr(h//2 - 6, w//2 - len(self.welc_msg[0])//2, self.welc_msg[0])
+        self.stdscr.addstr(h//2 - 4, w//2 - len(self.welc_msg[1])//2, self.welc_msg[1])
+
+
         for idx, row in enumerate(self.menu):
             x = w//2 - len(row)//2
             y = h//2 - len(self.menu)//2 + idx
@@ -67,7 +74,6 @@ class Game:
             print("Disabling cursor not supported by terminal provided by Code Institute")
 
         curses.init_pair(1, curses.COLOR_GREEN, curses.COLOR_CYAN)
-
         current_row = 0
         self.print_menu(current_row)
         # handle menu item selection
@@ -134,10 +140,14 @@ class Game:
         """ Generate a rectangle with the measurements mentioned below 
         as a barrier """
 
-        x_start_idx = int(np.floor(x_start_percent * (self.max_x - self.min_x))) + self.min_x
-        x_end_idx = int(np.floor(x_end_percent * (self.max_x - self.min_x))) + self.min_x
-        y_start_idx = int(np.floor(y_start_percent * (self.max_y - self.min_y))) + self.min_y
-        y_end_idx = int(np.floor(y_end_percent * (self.max_y - self.min_y))) + self.min_y
+        x_start_idx = int(
+            np.floor(x_start_percent * (self.max_x - self.min_x))) + self.min_x
+        x_end_idx = int(
+            np.floor(x_end_percent * (self.max_x - self.min_x))) + self.min_x
+        y_start_idx = int(
+            np.floor(y_start_percent * (self.max_y - self.min_y))) + self.min_y
+        y_end_idx = int(
+            np.floor(y_end_percent * (self.max_y - self.min_y))) + self.min_y
 
         for x in range(x_start_idx, x_end_idx):
             for y in range(y_start_idx, y_end_idx):
@@ -218,7 +228,7 @@ class Game:
         self.stdscr.nodelay(1)
         # create the textpad rectangle where the field goes
         sh, sw = self.stdscr.getmaxyx()
-        
+
         self.min_x = 3
         self.max_x = sh-3
         self.min_y = 3
@@ -240,10 +250,16 @@ class Game:
         self.draw_reward()
 
         # set the snake's 3 body parts
-        self.snake = [[sh//2, sw//2+1], [sh//2, sw//2], [sh//2, sw//2-1]]
+        # calculate center of the field (game window)
+        snake_center_x = (self.max_x - self.min_x)//2 + self.min_x
+        snake_center_y = (self.max_y - self.min_y)//2 + self.min_y
+        
+        # defined the snake (depending on the level)
+        self.snake = [[snake_center_x, snake_center_y+1], [snake_center_x, snake_center_y], [snake_center_x, snake_center_y-1]]
         self.direction = curses.KEY_RIGHT
         if self.level == 3:
-            self.snake = [[int(0.1 * sh), sw//2+1], [int(0.1 * sh), sw//2], [int(0.1 * sh), sw//2-1]]
+            self.snake = [[int(0.1 * snake_center_x), snake_center_y+1],
+                          [int(0.1 * snake_center_x), snake_center_y], [int(0.1 * snake_center_x), snake_center_y-1]]
 
         # draw snake's body with a character emoji
         for y, x in self.snake:
@@ -320,7 +336,7 @@ class Game:
                 self.score = 0
             self.print_score()
             self.fieldItems[self.snake[0][0], self.snake[0][1] - 1] = 0
-        
+
         # Snake drunk coffee and got hyper speed
         if self.fieldItems[self.snake[0][0], self.snake[0][1]] == 4:
             self.speed = int(self.speed / 2)
@@ -331,8 +347,6 @@ class Game:
             self.speed = int(self.speed / 2)
             self.stdscr.timeout(self.speed)
             self.fieldItems[self.snake[0][0], self.snake[0][1] - 1] = 0
-
-            
 
     def activate_chick_self_defense(self):
         """
@@ -346,7 +360,7 @@ class Game:
 
         # For level 2 generates the self defense about 50% of time
         if self.level == 2:
-            result = random.randint(0, 10) 
+            result = random.randint(0, 10)
             if result < 6:
                 return
 
