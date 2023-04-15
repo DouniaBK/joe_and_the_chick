@@ -157,12 +157,12 @@ class Game:
             self.generate_barrier_rectangle(0.40, 0.45, 0.4, 1)
 
         if self.level == 2:
-            self.generate_barrier_rectangle(0.20, 0.26, 0.0, 0.40)
-            self.generate_barrier_rectangle(0.70, 0.75, 0.0, 0.40)
-            self.generate_barrier_rectangle(0.20, 0.26, 0.6, 1)
-            self.generate_barrier_rectangle(0.70, 0.75, 0.6, 1)
-            self.generate_barrier_rectangle(0.00, 0.45, 0.48, 0.53)
-            self.generate_barrier_rectangle(0.55, 1, 0.48, 0.53)
+            # self.generate_barrier_rectangle(0.20, 0.26, 0.0, 0.40)
+            # self.generate_barrier_rectangle(0.70, 0.75, 0.0, 0.40)
+            # self.generate_barrier_rectangle(0.20, 0.26, 0.6, 1)
+            # self.generate_barrier_rectangle(0.70, 0.75, 0.6, 1)
+            # self.generate_barrier_rectangle(0.00, 0.45, 0.48, 0.53)
+            # self.generate_barrier_rectangle(0.55, 1, 0.48, 0.53)
 
             # Add a coffee mug to the level
             sh, sw = self.stdscr.getmaxyx()
