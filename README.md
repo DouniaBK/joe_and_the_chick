@@ -34,20 +34,31 @@ Joe and the chick is a simple snake game with level design architecture and stor
 
 This game is meant to be played in between breaks to relax, have fun and do something that doesn't require mental exhaustion and take the players mind of a stressful day.
 
-The game revolves around the character of Joe Tribiani from Friends. The Snake (▓) plays the role of Joe, the ultimate player, he has to:
-    * Catch a chick (🐤) to score 1 point
+The game revolves around the character of Joe Tribiani from Friends. The Snake (▓) plays the role of Joe, the ultimate player, who has to:
+
+    * Catch a chick (🐤) to score points
     * Eat a pastrami Sandwich (🌯) to regain force and score 2 points
     * Avoid being tasered (⚡) and lose 1 point
     * Stay away from barriers (▩) and borders or instant death it is
     * Abstain from biting oneself
     * Have fun
- 
+
+The game is played using the following keys:
+1. KEY_UP to move upward
+2. KEY_DOWN to move downward
+3. KEY_RIGHT to move right
+4. KEY_LEFT to move upward
+5. Press X to exit
+6. Press H to Menu
+7. Enter to select
+8. Press P to pause the game
+
 ### Visual Design
 
 * Menu:
 <display menu screenshot>
 
- As the gamer enters the game console, he is asked to choose an item from the menu, play, legend or exit. The play button directs the gamer to start playing the game, the legend option, contains instructions on how to play the game. Finally the Exit options allows the player to stop the game.
+ As the gamer enters the game console, he is asked to choose an item from the menu, play, legend or exit. The play button directs the gamer to start playing the game, the legend option, contains instructions on how to play the game. Finally the Exit options allows the player to stop the game. The menu items appear in the middle of the terminal and the item selected is highlighted for better visual contrast. The user is allowed to use Key down/up and enter to select menu items.
 
 * The game:
 < add game screenshot>
@@ -55,20 +66,20 @@ The game revolves around the character of Joe Tribiani from Friends. The Snake (
 The design of the game is clean and playful adhedring to the character of Joe Tribiani's, from Friends, personality traits. The use of emojies and unicode characters inspire inner playfulness and encourage the player to continue playing. The game field is a pad created using curses. It displays clean visual borders for the player to not cross. Above the field, a score is displayed for the player to see his total score.
 Throughout the game, messages will appear to show indicate the state of game to the player such as, "Game Over!" or "Congrats Joe, you scored enough to level up" or ask for an input to exit the game.
 
+* Emojis as a design choice:
+
+Emoticons are widely used among the targeted players' age range of this game. Emojis are often used in communication as coded language to convey different meanings in various scenarios to various groups. Hence, their use in this game can add contextual or additional emotional meaning to the players and a fun upbeat game environment. As the game is set around the dating scene of a loveable character, the emojis represent what Joe is known for, his love for sandwiches, his chick magnetism and catchphrases.
+
 The characters in the game are:
-    * Snake ▓  
-    * Chick 🐤
-    * Pastrami Sandwich🌯
-    * Taser ⚡
-    * Barrier ▩
+* Snake ▓  
+* Chick 🐤
+* Pastrami Sandwich🌯 rewards 2 points
+* Taser ⚡decrement 1 point
+* Barrier ▩ instant death
 
 ### Features
 
 #### Game Elements:
-
-* Emojis:
-
-Emoticons are wildly used among the targeted players of this game, they can be used as their own language to convey different meanings in various scenarios. Hence, their use can add contextual or additional emotional meaning to the player and a fun upbeat game environment. As the game is set around the dating scene of a loveable character, the emojis represent what Joe is known for, his love for sandwiches, his chick magnetism and catchphrases.
 
 * Snake ▓ :
 
@@ -141,12 +152,11 @@ The game class is devided into three section:
     Python
 
 ### Libraries
- Curses :
- Find the link [here](https://docs.python.org/3/howto/curses.html) for a detailed description.
-### Packages
-    Numpy
-     Random
-     Time
+* Curses : find the link [here](https://docs.python.org/3/howto/curses.html) for a detailed description.
+* Numpy : to install numpy, simply type in the terminal : pip3 install numpy
+* Random
+* Time
+* Copy
 ### Platforms
  **Github**
  * Storing code remotely and deployment.
@@ -161,10 +171,12 @@ The game class is devided into three section:
 
 * Bug: Although executing properly within Gitpod, the command to disable the terminals cursor "curses.curs_set(0)" returns an error in the deployed version on heroku, which means that the supplied Code Institute terminal implementation does not support disabling the cursor.
 The cursor will therefore be visible in the deployed version of the app, while being invisible on a local or Gitpod terminal. 
+
 * Fix: Try block to handle terminal incompatibility with disabling the cursor. If terminal does not support invisible cursors, as the one provided in the code-institute template, curs_set will return an error.
 
 ### Chick Emoji
  * Bug: Due to the size of the chick emoji, the collision between the snake the chick was not being registered. Visually the player thinks he has hit the target but computationaly it did not due to an offset.
+
  * Fix: Determine if the snake ate the chick and return true if so The terminal draws the chick one cell to the left due to the emoji size. This visual offset is compensated for here by extending the radius of possible target hits.
 
 ### Taser
