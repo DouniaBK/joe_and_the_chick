@@ -260,8 +260,7 @@ class Game:
         if self.level == 2:
             self.snake = [[snake_center_x, snake_center_y+5], [snake_center_x, snake_center_y+4], [snake_center_x, snake_center_y+3]]
         elif self.level == 3:
-            self.snake = [[int(0.2 * snake_center_x), snake_center_y+1],
-                          [int(0.2 * snake_center_x), snake_center_y], [int(0.2 * snake_center_x), snake_center_y-1]]
+            self.snake = [[snake_center_x + 4, snake_center_y + 5], [snake_center_x + 4, snake_center_y + 4], [snake_center_x + 4, snake_center_y + 3]]
 
         # draw snake's body with a character emoji
         for y, x in self.snake:
