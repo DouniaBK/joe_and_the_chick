@@ -55,7 +55,7 @@ class Game:
         self.stdscr.clear()
 
         h, w = self.stdscr.getmaxyx()
-        how_to_play = ["LEGEND", "", "You think you got game with chicks?!", "", "", 
+        how_to_play = ["LEGEND", "",
         "This game is inspired by the ultimate player, Joe Tribiani from Friends.", "", 
         "The Snake (▓) plays the role of Joe who has to:", "", 
         "Get chicks (🐤) to score points.",
