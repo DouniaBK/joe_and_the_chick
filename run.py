@@ -58,15 +58,13 @@ class Game:
         how_to_play = ["LEGEND", "", "You think you got game with chicks?!", "", "", 
         "This game is inspired by the ultimate player, Joe Tribiani from Friends.", "", 
         "The Snake (▓) plays the role of Joe who has to:", "", 
-        "Get chicks (🐤) to score points."]
-        """
-        ,
+        "Get chicks (🐤) to score points.",
         "Eat a pastrami Sandwich (🌯) to regain force and score 2 points.",
         "But beware of traps, player!",
         "Get the karate-chick (🐤⚡) without being tasered (⚡) and lose 1 point.",
         "Stay away from coffee (☕), it makes you hyper.","Also, keep your foot out of your mouth", "and stay away from barriers (▩▩▩▩) or instant death, it is.", "" ,"Now, have fun chasing chicks!", "", "To play the game use your arrow keys to move the snake."
         , "Press X to exit the game.", "", "From Legend, Press any key to return to the main menu."]
-        """
+        
 
         for idx, row in enumerate(how_to_play):
             x = w//2 - len(row)//2
