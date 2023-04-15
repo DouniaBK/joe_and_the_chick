@@ -216,7 +216,7 @@ class Game:
 
     def evaluate_level_up(self):
         """ check the score and evaluate the level accordingly"""
-        if (self.score >= 5):
+        if (self.score >= 1):
             self.level = self.level + 1
             return True
 
@@ -258,7 +258,7 @@ class Game:
         self.snake = [[snake_center_x, snake_center_y+1], [snake_center_x, snake_center_y], [snake_center_x, snake_center_y-1]]
         self.direction = curses.KEY_RIGHT
         if self.level == 2:
-            self.snake = [[snake_center_x, snake_center_y+5], [snake_center_x, snake_center_y+4], [snake_center_x, snake_center_y+3]]
+            self.snake = [[snake_center_x + 1, snake_center_y + 5], [snake_center_x + 1, snake_center_y+4], [snake_center_x + 1, snake_center_y+3]]
         elif self.level == 3:
             self.snake = [[snake_center_x + 4, snake_center_y + 5], [snake_center_x + 4, snake_center_y + 4], [snake_center_x + 4, snake_center_y + 3]]
 
