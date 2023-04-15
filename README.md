@@ -198,6 +198,12 @@ detection behavior.
 * Bug: Barriers looked different depending on the online terminal and the Gitpod terminal, which was due to an incorrect calculation of the barrier position.
 * Fix: Adapted the terminal position to take into account only the game field.
 
+            
+### The curses addstr function
+* Bug: the curses function addstr() would on occasion crash the application if writing in the terminal failed.
+* Fix: The fix was to wrap addstr() into a try block, which avoids crashing the game if 
+addstr returns an error.
+
 
 ## Deployment
 * Local Deployment

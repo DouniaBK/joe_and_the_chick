@@ -29,6 +29,19 @@ class Game:
         self.min_y = 0
         self.max_y = 0
 
+
+    """------------- Helper Functions ------------------"""
+
+    def addstr(self, y_coord, x_coord, text):
+        """
+        Helper function that encapsules stdscr.addstr() into a try block,
+        to avoid crashing the application if it fails. 
+        """
+        try:
+            self.stdscr.addstr(y_coord, x_coord, text)
+        except Exception:
+            print("addstr returned an error.")
+
     """-------------------- MENU -----------------------"""
 
     def print_menu(self, selected_row_idx):
@@ -36,21 +49,22 @@ class Game:
 
         h, w = self.stdscr.getmaxyx()
 
-        self.stdscr.addstr(h//2 - 7, w//2 - len(self.welc_msg[0])//2, self.welc_msg[0])
-        self.stdscr.addstr(h//2 - 5, w//2 - len(self.welc_msg[1])//2, self.welc_msg[1])
-        self.stdscr.addstr(h//2 - 4, w//2 - len(self.welc_msg[2])//2, self.welc_msg[2])
+        self.addstr(h//2 - 7, w//2 - len(self.welc_msg[0])//2, self.welc_msg[0])
+        self.addstr(h//2 - 5, w//2 - len(self.welc_msg[1])//2, self.welc_msg[1])
+        self.addstr(h//2 - 4, w//2 - len(self.welc_msg[2])//2, self.welc_msg[2])
 
         for idx, row in enumerate(self.menu):
             x = w//2 - len(row)//2
             y = h//2 - len(self.menu)//2 + idx
             if idx == selected_row_idx:
                 self.stdscr.attron(curses.color_pair(1))
-                self.stdscr.addstr(y, x, row)
+                self.addstr(y, x, row)
                 self.stdscr.attroff(curses.color_pair(1))
             else:
-                self.stdscr.addstr(y, x, row)
+                self.addstr(y, x, row)
         self.stdscr.refresh()
     
+
     def print_legend(self):
         self.stdscr.clear()
 
@@ -69,7 +83,7 @@ class Game:
         for idx, row in enumerate(how_to_play):
             x = w//2 - len(row)//2
             y = 1 + idx
-            self.stdscr.addstr(y, x, row)
+            self.addstr(y, x, row)
 
         self.stdscr.refresh()
 
@@ -82,7 +96,7 @@ class Game:
         h, w = self.stdscr.getmaxyx()
         x = w//2 - len(text)//2
         y = h//2
-        self.stdscr.addstr(y, x, text)
+        self.addstr(y, x, text)
         self.stdscr.refresh()
 
     def menu_main(self):
@@ -146,7 +160,7 @@ class Game:
         """print score in the top center of the terminal outside the field"""
         sh, sw = self.stdscr.getmaxyx()
         score_display = "Score: {}".format(self.score)
-        self.stdscr.addstr(1, sw//2-len(score_display)//2, score_display)
+        self.addstr(1, sw//2-len(score_display)//2, score_display)
         self.stdscr.refresh()
 
     def evaluate_field(self):
@@ -203,7 +217,7 @@ class Game:
             sh, sw = self.stdscr.getmaxyx()
             coffee_mug = [int(np.ceil(0.45 * sh)), sw//2]
             self.fieldItems[coffee_mug[0], coffee_mug[1]] = 4
-            self.stdscr.addstr(coffee_mug[0], coffee_mug[1], '☕')
+            self.addstr(coffee_mug[0], coffee_mug[1], '☕')
 
         if self.level == 3:
             self.generate_barrier_rectangle(0.20, 0.26, 0.0, 0.25)
@@ -217,7 +231,7 @@ class Game:
             sh, sw = self.stdscr.getmaxyx()
             coffee_mug = [int(np.ceil(0.95 * (sh-3))), sw//2]
             self.fieldItems[coffee_mug[0], coffee_mug[1]] = 4
-            self.stdscr.addstr(coffee_mug[0], coffee_mug[1], '☕')
+            self.addstr(coffee_mug[0], coffee_mug[1], '☕')
 
     def is_within_barriers(self, x, y):
         return (x < self.max_x) and (x > self.min_x) and (y < self.max_y) and (y > self.min_y)
@@ -227,7 +241,7 @@ class Game:
         for x in range(self.fieldItems.shape[0]):
             for y in range(self.fieldItems.shape[1]):
                 if self.fieldItems[x, y] == 1 and self.is_within_barriers(x, y):
-                    self.stdscr.addstr(x, y, '▩')
+                    self.addstr(x, y, '▩')
 
     def generate_reward(self):
         """ Generate sandwich for joe as a reward to increase score"""
@@ -239,7 +253,7 @@ class Game:
         for x in range(self.fieldItems.shape[0]):
             for y in range(self.fieldItems.shape[1]):
                 if self.fieldItems[x, y] == 2 and self.is_within_barriers(x, y):
-                    self.stdscr.addstr(x, y, '🌯')
+                    self.addstr(x, y, '🌯')
 
     def evaluate_level_up(self):
         """ check the score and evaluate the level accordingly"""
@@ -291,11 +305,11 @@ class Game:
 
         # draw snake's body with a character emoji
         for y, x in self.snake:
-            self.stdscr.addstr(y, x, '▓')
+            self.addstr(y, x, '▓')
 
         # create the chick with an emoji
         self.chick = self.food_coord()
-        self.stdscr.addstr(self.chick[0], self.chick[1], '🐤')
+        self.addstr(self.chick[0], self.chick[1], '🐤')
 
         # print score
         self.score = 0
@@ -315,7 +329,7 @@ class Game:
         """ Allow progress to next level"""
         msg = "How you doing? Leveling up, player."
         sh, sw = self.stdscr.getmaxyx()
-        self.stdscr.addstr(sh//2, sw//2-len(msg)//2, msg)
+        self.addstr(sh//2, sw//2-len(msg)//2, msg)
         self.stdscr.nodelay(0)
         # key = self.stdscr.getch()
         self.stdscr.refresh()
@@ -399,14 +413,14 @@ class Game:
             if self.fieldItems[self_defense_coords[0], self_defense_coords[1]] == 0:
                 self.fieldItems[self_defense_coords[0],
                                 self_defense_coords[1]] = 3
-                self.stdscr.addstr(
+                self.addstr(
                     self_defense_coords[0], self_defense_coords[1], '⚡')
                 self.self_defense_coordinate = self_defense_coords
 
     def deactivate_chick_self_defense(self):
         """ Clean up old chicks self defense weapon """
         if self.self_defense_coordinate is not None:
-            self.stdscr.addstr(
+            self.addstr(
                 self.self_defense_coordinate[0], self.self_defense_coordinate[1], ' ')
             self.self_defense_coordinate = None
             self.stdscr.refresh()
@@ -455,9 +469,9 @@ class Game:
                 new_head = [head[0]+1, head[1]]
 
             # insert a new head
-            self.stdscr.addstr(new_head[0], new_head[1], '▓')
+            self.addstr(new_head[0], new_head[1], '▓')
             self.snake.insert(0, new_head)
-            self.stdscr.addstr(10, 10, ' ')
+            self.addstr(10, 10, ' ')
 
             # Check if the snake ate something besides the chick
             self.snake_ate_stuff()
@@ -476,7 +490,7 @@ class Game:
                 # display a new chick everytime the snake eats the last one
                 self.chick = self.food_coord()
 
-                self.stdscr.addstr(self.chick[0], self.chick[1], '🐤')
+                self.addstr(self.chick[0], self.chick[1], '🐤')
                 self.activate_chick_self_defense()
                 # increase speed of the game
                 self.speed = int(self.speed * 0.9)
@@ -484,7 +498,7 @@ class Game:
             else:
                 # to mimic motion the last part of the head has to be removed
                 # and replaced by a space
-                self.stdscr.addstr(self.snake[-1][0], self.snake[-1][1], ' ')
+                self.addstr(self.snake[-1][0], self.snake[-1][1], ' ')
                 self.snake.pop()
             """
             rules of the game
@@ -494,7 +508,7 @@ class Game:
             if (self.evaluate_field()):
                 msg = "Game Over!"
                 sh, sw = self.stdscr.getmaxyx()
-                self.stdscr.addstr(sh//2, sw//2-len(msg)//2, msg)
+                self.addstr(sh//2, sw//2-len(msg)//2, msg)
                 self.stdscr.nodelay(0)
                 self.stdscr.getch()
                 break
