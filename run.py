@@ -17,7 +17,7 @@ class Game:
         self.chick = []
         self.box = []
         self.score = 0
-        self.level = 3
+        self.level = 1
         self.menu = ['Home', 'Play', 'Legend', 'Exit']
         self.welc_msg = ['☕  Welcome to Joe and the chick  🐤', 'Choose play to start or Legend to read the game instructions']
         self.direction = curses.KEY_RIGHT
@@ -39,7 +39,6 @@ class Game:
 
         self.stdscr.addstr(h//2 - 6, w//2 - len(self.welc_msg[0])//2, self.welc_msg[0])
         self.stdscr.addstr(h//2 - 4, w//2 - len(self.welc_msg[1])//2, self.welc_msg[1])
-
 
         for idx, row in enumerate(self.menu):
             x = w//2 - len(row)//2
@@ -277,9 +276,9 @@ class Game:
         if self.level == 1:
             self.speed = 200
         elif self.level == 2:
-            self.speed = 150
+            self.speed = 160
         elif self.level == 3:
-            self.speed = 100
+            self.speed = 130
         self.stdscr.timeout(self.speed)
 
         self.stdscr.refresh()
@@ -314,25 +313,25 @@ class Game:
 
         # Snake ate sandwitch
         if self.fieldItems[self.snake[0][0], self.snake[0][1]] == 2:
-            self.score = + 2
+            self.score = self.score + 2
             self.print_score()
             self.fieldItems[self.snake[0][0], self.snake[0][1]] = 0
 
         elif self.fieldItems[self.snake[0][0], self.snake[0][1] - 1] == 2:
-            self.score = + 2
+            self.score = self.score + 2
             self.print_score()
             self.fieldItems[self.snake[0][0], self.snake[0][1] - 1] = 0
 
         # Snake got tasered
         if self.fieldItems[self.snake[0][0], self.snake[0][1]] == 3:
-            self.score = - 1
+            self.score = self.score - 1
             if self.score < 0:
                 self.score = 0
             self.print_score()
             self.fieldItems[self.snake[0][0], self.snake[0][1]] = 0
 
         elif self.fieldItems[self.snake[0][0], self.snake[0][1] - 1] == 3:
-            self.score = - 1
+            self.score = self.score - 1
             if self.score < 0:
                 self.score = 0
             self.print_score()
@@ -340,12 +339,12 @@ class Game:
 
         # Snake drunk coffee and got hyper speed
         if self.fieldItems[self.snake[0][0], self.snake[0][1]] == 4:
-            self.speed = int(self.speed / 2)
+            self.speed = int(self.speed * 0.75)
             self.stdscr.timeout(self.speed)
             self.fieldItems[self.snake[0][0], self.snake[0][1]] = 0
 
         elif self.fieldItems[self.snake[0][0], self.snake[0][1] - 1] == 4:
-            self.speed = int(self.speed / 2)
+            self.speed = int(self.speed * 0.75)
             self.stdscr.timeout(self.speed)
             self.fieldItems[self.snake[0][0], self.snake[0][1] - 1] = 0
 
