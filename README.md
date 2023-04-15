@@ -204,6 +204,9 @@ detection behavior.
 * Fix: The fix was to wrap addstr() into a try block, which avoids crashing the game if 
 addstr returns an error.
 
+### Terminal problem
+* Problem: line too long (86 > 79 characters)
+* Fix : # noqa
 
 ## Deployment
 * Local Deployment

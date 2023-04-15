@@ -1,4 +1,3 @@
-
 import curses
 from curses import textpad
 import time
@@ -19,8 +18,7 @@ class Game:
         self.score = 0
         self.level = 1
         self.menu = ['Home', 'Play', 'Legend', 'Exit']
-        self.welc_msg = ['☕ Welcome to Joe and the chick 🐤',
-                         'If you got game with the chicks,', 'select Play or go learn the game in Legend.']
+        self.welc_msg = ['☕ Welcome to Joe and the chick 🐤', 'If you got game with the chicks,', 'select Play or go learn the game in Legend.'] # noqa
         self.direction = curses.KEY_RIGHT
         self.fieldItems = []
         self.speed = 200
@@ -35,16 +33,20 @@ class Game:
     def addstr(self, y_coord, x_coord, text):
         """
         Helper function that encapsules stdscr.addstr() into a try block,
-        to avoid crashing the application if it fails. 
+        to avoid crashing the application if it fails.
         """
         try:
             self.stdscr.addstr(y_coord, x_coord, text)
         except Exception:
-            print("addstr returned an error.")
+            print("")
 
     """-------------------- MENU -----------------------"""
-
     def print_menu(self, selected_row_idx):
+        """
+        Print menu
+        Print Welcome message
+        Highlight on and off of menu item selected
+        """
         self.stdscr.clear()
 
         h, w = self.stdscr.getmaxyx()
@@ -68,17 +70,21 @@ class Game:
         self.stdscr.refresh()
 
     def print_legend(self):
+        """Print legend text"""
         self.stdscr.clear()
 
         h, w = self.stdscr.getmaxyx()
         how_to_play = ["LEGEND", "",
-                       "This game is inspired by the ultimate player, Joe Tribiani from Friends.", "",
+                       "This game is inspired by the ultimate player, Joe Tribiani from Friends.", "", # noqa
                        "The Snake (▓) plays the role of Joe who has to:", "",
                        "Get chicks (🐤) to score points.",
-                       "Eat a pastrami Sandwich (🌯) to regain force and score 2 points.",
+                       "Eat a pastrami Sandwich (🌯) to regain force and score 2 points.", # noqa
                        "But beware of traps, player!",
-                       "Get the karate-chick (🐤⚡) without being tasered (⚡) and lose 1 point.",
-                       "Stay away from coffee (☕), it makes you hyper.", "Also, keep your foot out of your mouth", "and stay away from barriers (▩▩▩▩) or instant death, it is.", "", "Now, have fun chasing chicks!", "", "To play the game use your arrow keys to move the snake.", "Press X to exit the game.", "", "From Legend, Press any key to return to the main menu."]
+                       "Get the karate-chick (🐤⚡) without being tasered (⚡) and lose 1 point.", # noqa
+                       "Stay away from coffee (☕), it makes you hyper.", "Also, keep your foot out of your mouth", # noqa
+                       "and stay away from barriers (▩▩▩▩) or instant death, it is.", "", "Now, have fun chasing chicks!",  # noqa
+                       "", "To play the game use your arrow keys to move the snake.", "Press X to exit the game.", "", # noqa
+                       "From Legend, Press any key to return to the main menu."] # noqa
 
         for idx, row in enumerate(how_to_play):
             x = w//2 - len(row)//2
@@ -108,7 +114,7 @@ class Game:
         try:
             curses.curs_set(0)
         except Exception:
-            print("Disabling cursor not supported by terminal provided by Code Institute")
+            print("Disabling cursor not supported by terminal provided by Code Institute") # noqa
 
         curses.init_pair(1, curses.COLOR_GREEN, curses.COLOR_CYAN)
         current_row = 0
@@ -145,8 +151,8 @@ class Game:
 
         while free_coord is None:
             free_coord = [random.randint(
-                self.box[0][0]+4, self.box[1][0]-4), random.randint(self.box[0][1]+4, self.box[1][1]-4)]
-            if (free_coord in self.snake) or (self.fieldItems[free_coord[0], free_coord[1]] > 0) or (free_coord == self.chick):
+                self.box[0][0]+4, self.box[1][0]-4), random.randint(self.box[0][1]+4, self.box[1][1]-4)] # noqa
+            if (free_coord in self.snake) or (self.fieldItems[free_coord[0], free_coord[1]] > 0) or (free_coord == self.chick): # noqa
                 free_coord = None
         return free_coord
 
@@ -167,7 +173,7 @@ class Game:
         Check for collision, or whether the snake bit itself
         Check for collision with border or itself
         """
-        collision = self.snake[0][0] in [self.box[0][0], self.box[1][0]] or self.snake[0][1] in [
+        collision = self.snake[0][0] in [self.box[0][0], self.box[1][0]] or self.snake[0][1] in [ # noqa E501
             self.box[0][1], self.box[1][1]] or self.snake[0] in self.snake[1:]
 
         # Check for collision with items on the field
@@ -176,8 +182,8 @@ class Game:
 
         return collision
 
-    def generate_barrier_rectangle(self, x_start_percent, x_end_percent, y_start_percent, y_end_percent):
-        """ Generate a rectangle with the measurements mentioned below 
+    def generate_barrier_rectangle(self, x_start_percent, x_end_percent, y_start_percent, y_end_percent): # noqa
+        """ Generate a rectangle with the measurements mentioned below
         as a barrier """
 
         x_start_idx = int(
@@ -194,7 +200,7 @@ class Game:
                 self.fieldItems[x, y] = 1
 
     def generate_barrier(self):
-        """ 
+        """
         Generate a barrier
         Coodinates are calculated in percent
         Mug appears between the mid-center barriers
@@ -233,13 +239,14 @@ class Game:
             self.addstr(coffee_mug[0], coffee_mug[1], '☕')
 
     def is_within_barriers(self, x, y):
-        return (x < self.max_x) and (x > self.min_x) and (y < self.max_y) and (y > self.min_y)
+        """ check within field """
+        return (x < self.max_x) and (x > self.min_x) and (y < self.max_y) and (y > self.min_y) # noqa
 
     def draw_barrier(self):
         """Print a barrier on the field"""
         for x in range(self.fieldItems.shape[0]):
             for y in range(self.fieldItems.shape[1]):
-                if self.fieldItems[x, y] == 1 and self.is_within_barriers(x, y):
+                if self.fieldItems[x, y] == 1 and self.is_within_barriers(x, y): # noqa
                     self.addstr(x, y, '▩')
 
     def generate_reward(self):
@@ -251,7 +258,7 @@ class Game:
         """ Print reward on the field which will increase the score """
         for x in range(self.fieldItems.shape[0]):
             for y in range(self.fieldItems.shape[1]):
-                if self.fieldItems[x, y] == 2 and self.is_within_barriers(x, y):
+                if self.fieldItems[x, y] == 2 and self.is_within_barriers(x, y): # noqa
                     self.addstr(x, y, '🌯')
 
     def evaluate_level_up(self):
@@ -276,7 +283,7 @@ class Game:
 
         self.box = [[self.min_x, self.min_y], [self.max_x,  self.max_y]]
         textpad.rectangle(
-            self.stdscr, self.box[0][0], self.box[0][1], self.box[1][0], self.box[1][1])
+            self.stdscr, self.box[0][0], self.box[0][1], self.box[1][0], self.box[1][1]) # noqa
 
         # initialize field items array, which stores the game level
         self.fieldItems = np.zeros((sh, sw))
@@ -296,14 +303,14 @@ class Game:
 
         # defined the snake (depending on the level)
         self.snake = [[snake_center_x, snake_center_y+1], [snake_center_x,
-                                                           snake_center_y], [snake_center_x, snake_center_y-1]]
+                                                           snake_center_y], [snake_center_x, snake_center_y-1]] # noqa
         self.direction = curses.KEY_RIGHT
         if self.level == 2:
-            self.snake = [[snake_center_x + 1, snake_center_y + 5], [snake_center_x +
-                                                                     1, snake_center_y+4], [snake_center_x + 1, snake_center_y+3]]
+            self.snake = [[snake_center_x + 1, snake_center_y + 5], [snake_center_x + # noqa
+                                                                     1, snake_center_y+4], [snake_center_x + 1, snake_center_y+3]] # noqa
         elif self.level == 3:
-            self.snake = [[snake_center_x + 4, snake_center_y + 5], [snake_center_x +
-                                                                     4, snake_center_y + 4], [snake_center_x + 4, snake_center_y + 3]]
+            self.snake = [[snake_center_x + 4, snake_center_y + 5], [snake_center_x + # noqa
+                                                                     4, snake_center_y + 4], [snake_center_x + 4, snake_center_y + 3]] # noqa
 
         # draw snake's body with a character emoji
         for y, x in self.snake:
@@ -347,7 +354,7 @@ class Game:
         """
         chick_with_offset = copy.deepcopy(coords_chick)
         chick_with_offset[1] = chick_with_offset[1] + 1
-        return (coords_snake_head == chick_with_offset) or (coords_snake_head == coords_chick)
+        return (coords_snake_head == chick_with_offset) or (coords_snake_head == coords_chick) # noqa
 
     def snake_ate_stuff(self):
         """
@@ -412,7 +419,7 @@ class Game:
             self_defense_coords = copy.deepcopy(self.chick)
             self_defense_coords[0] = self_defense_coords[0] - 1
             self_defense_coords[1] = self_defense_coords[1] + 1
-            if self.fieldItems[self_defense_coords[0], self_defense_coords[1]] == 0:
+            if self.fieldItems[self_defense_coords[0], self_defense_coords[1]] == 0: # noqa
                 self.fieldItems[self_defense_coords[0],
                                 self_defense_coords[1]] = 3
                 self.addstr(
@@ -423,7 +430,7 @@ class Game:
         """ Clean up old chicks self defense weapon """
         if self.self_defense_coordinate is not None:
             self.addstr(
-                self.self_defense_coordinate[0], self.self_defense_coordinate[1], ' ')
+                self.self_defense_coordinate[0], self.self_defense_coordinate[1], ' ') # noqa
             self.self_defense_coordinate = None
             self.stdscr.refresh()
 
@@ -437,7 +444,7 @@ class Game:
             return
         # ----- Start Game ----------
         """ Set up curses
-        Try block to handle terminal incompatibility 
+        Try block to handle terminal incompatibility
         with disabling the cursor. If terminal does not
         support invisible cursors, as the one provided in the
         code-institute template, curs_set will return an error."""
@@ -510,8 +517,8 @@ class Game:
             if snake crashes against the border, a barrier or bites itself
             the game is over
             """
-            if (self.evaluate_field()):
-                msg = "You waited too long and now you are the mayor of the friend zone. Game Over!"
+            if self.evaluate_field():
+                msg = "You are the mayor of the friend zone. Game Over!"
                 sh, sw = self.stdscr.getmaxyx()
                 self.addstr(sh//2, sw//2-len(msg)//2, msg)
                 self.stdscr.nodelay(0)
@@ -522,13 +529,14 @@ class Game:
 
             # Evaluate the level progress
             lvlup = self.evaluate_level_up()
-            if (lvlup is True):
+            if lvlup is True:
                 self.progress_to_next_level()
 
             # key = self.stdscr.getch()
 
 
 def main(stdscr):
+    """run all program function"""
     game = Game(stdscr)
     game.run()
     curses.endwin()
