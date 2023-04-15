@@ -253,11 +253,13 @@ class Game:
         # calculate center of the field (game window)
         snake_center_x = (self.max_x - self.min_x)//2 + self.min_x
         snake_center_y = (self.max_y - self.min_y)//2 + self.min_y
-        
+
         # defined the snake (depending on the level)
         self.snake = [[snake_center_x, snake_center_y+1], [snake_center_x, snake_center_y], [snake_center_x, snake_center_y-1]]
         self.direction = curses.KEY_RIGHT
-        if self.level == 3:
+        if self.level == 2:
+            self.snake = [[snake_center_x, snake_center_y+5], [snake_center_x, snake_center_y+4], [snake_center_x, snake_center_y+3]]
+        elif self.level == 3:
             self.snake = [[int(0.1 * snake_center_x), snake_center_y+1],
                           [int(0.1 * snake_center_x), snake_center_y], [int(0.1 * snake_center_x), snake_center_y-1]]
 
