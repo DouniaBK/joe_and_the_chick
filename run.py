@@ -17,7 +17,7 @@ class Game:
         self.chick = []
         self.box = []
         self.score = 0
-        self.level = 1
+        self.level = 3
         self.menu = ['Home', 'Play', 'Legend', 'Exit']
         self.welc_msg = ['☕  Welcome to Joe and the chick  🐤', 'Choose play to start or Legend to read the game instructions']
         self.direction = curses.KEY_RIGHT
@@ -179,12 +179,12 @@ class Game:
             self.stdscr.addstr(coffee_mug[0], coffee_mug[1], '☕')
 
         if self.level == 3:
-            self.generate_barrier_rectangle(0.20, 0.26, 0.0, 0.40)
-            self.generate_barrier_rectangle(0.70, 0.75, 0.0, 0.40)
-            self.generate_barrier_rectangle(0.20, 0.26, 0.6, 1)
-            self.generate_barrier_rectangle(0.70, 0.75, 0.6, 1)
-            self.generate_barrier_rectangle(0.15, 0.9, 0.48, 0.53)
-            self.generate_barrier_rectangle(0.48, 0.53, 0.1, 0.9)
+            self.generate_barrier_rectangle(0.20, 0.26, 0.0, 0.25)
+            self.generate_barrier_rectangle(0.70, 0.75, 0.0, 0.25)
+            self.generate_barrier_rectangle(0.20, 0.26, 0.75, 1)
+            self.generate_barrier_rectangle(0.70, 0.75, 0.75, 1)
+            self.generate_barrier_rectangle(0.2, 0.85, 0.48, 0.52)
+            self.generate_barrier_rectangle(0.48, 0.52, 0.2, 0.85)
 
             # Add a coffee mug to the level
             sh, sw = self.stdscr.getmaxyx()
