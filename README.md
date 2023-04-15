@@ -194,7 +194,9 @@ The cursor will therefore be visible in the deployed version of the app, while b
 detection behavior.
 * Fix: This terminal drawing behavior needed to be taken into account during collision detection. 
 
-
+### Calculation of barrier position
+* Bug: Barriers looked different depending on the online terminal and the Gitpod terminal, which was due to an incorrect calculation of the barrier position.
+* Fix: Adapted the terminal position to take into account only the game field.
 
 
 ## Deployment
