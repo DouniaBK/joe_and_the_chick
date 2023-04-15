@@ -19,7 +19,8 @@ class Game:
         self.score = 0
         self.level = 1
         self.menu = ['Home', 'Play', 'Legend', 'Exit']
-        self.welc_msg = ['☕ Welcome to Joe and the chick 🐤', 'If you got game with the chicks,', 'select Play or go to Legend for game instructions']
+        self.welc_msg = ['☕ Welcome to Joe and the chick 🐤',
+                         'If you got game with the chicks,', 'select Play or go learn the game in Legend.']
         self.direction = curses.KEY_RIGHT
         self.fieldItems = []
         self.speed = 200
@@ -28,7 +29,6 @@ class Game:
         self.max_x = 0
         self.min_y = 0
         self.max_y = 0
-
 
     """------------- Helper Functions ------------------"""
 
@@ -49,9 +49,12 @@ class Game:
 
         h, w = self.stdscr.getmaxyx()
 
-        self.addstr(h//2 - 7, w//2 - len(self.welc_msg[0])//2, self.welc_msg[0])
-        self.addstr(h//2 - 5, w//2 - len(self.welc_msg[1])//2, self.welc_msg[1])
-        self.addstr(h//2 - 4, w//2 - len(self.welc_msg[2])//2, self.welc_msg[2])
+        self.addstr(h//2 - 7, w//2 -
+                    len(self.welc_msg[0])//2, self.welc_msg[0])
+        self.addstr(h//2 - 5, w//2 -
+                    len(self.welc_msg[1])//2, self.welc_msg[1])
+        self.addstr(h//2 - 4, w//2 -
+                    len(self.welc_msg[2])//2, self.welc_msg[2])
 
         for idx, row in enumerate(self.menu):
             x = w//2 - len(row)//2
@@ -63,22 +66,19 @@ class Game:
             else:
                 self.addstr(y, x, row)
         self.stdscr.refresh()
-    
 
     def print_legend(self):
         self.stdscr.clear()
 
         h, w = self.stdscr.getmaxyx()
         how_to_play = ["LEGEND", "",
-        "This game is inspired by the ultimate player, Joe Tribiani from Friends.", "", 
-        "The Snake (▓) plays the role of Joe who has to:", "", 
-        "Get chicks (🐤) to score points.",
-        "Eat a pastrami Sandwich (🌯) to regain force and score 2 points.",
-        "But beware of traps, player!",
-        "Get the karate-chick (🐤⚡) without being tasered (⚡) and lose 1 point.",
-        "Stay away from coffee (☕), it makes you hyper.","Also, keep your foot out of your mouth", "and stay away from barriers (▩▩▩▩) or instant death, it is.", "" ,"Now, have fun chasing chicks!", "", "To play the game use your arrow keys to move the snake."
-        , "Press X to exit the game.", "", "From Legend, Press any key to return to the main menu."]
-        
+                       "This game is inspired by the ultimate player, Joe Tribiani from Friends.", "",
+                       "The Snake (▓) plays the role of Joe who has to:", "",
+                       "Get chicks (🐤) to score points.",
+                       "Eat a pastrami Sandwich (🌯) to regain force and score 2 points.",
+                       "But beware of traps, player!",
+                       "Get the karate-chick (🐤⚡) without being tasered (⚡) and lose 1 point.",
+                       "Stay away from coffee (☕), it makes you hyper.", "Also, keep your foot out of your mouth", "and stay away from barriers (▩▩▩▩) or instant death, it is.", "", "Now, have fun chasing chicks!", "", "To play the game use your arrow keys to move the snake.", "Press X to exit the game.", "", "From Legend, Press any key to return to the main menu."]
 
         for idx, row in enumerate(how_to_play):
             x = w//2 - len(row)//2
@@ -88,7 +88,6 @@ class Game:
         self.stdscr.refresh()
 
         key = self.stdscr.getch()
-
 
     def print_center(self, text):
         """ Print menu in the center of the terminal"""
@@ -257,7 +256,7 @@ class Game:
 
     def evaluate_level_up(self):
         """ check the score and evaluate the level accordingly"""
-        if (self.score >= 1):
+        if (self.score >= 5):
             self.level = self.level + 1
             return True
 
@@ -296,12 +295,15 @@ class Game:
         snake_center_y = (self.max_y - self.min_y)//2 + self.min_y
 
         # defined the snake (depending on the level)
-        self.snake = [[snake_center_x, snake_center_y+1], [snake_center_x, snake_center_y], [snake_center_x, snake_center_y-1]]
+        self.snake = [[snake_center_x, snake_center_y+1], [snake_center_x,
+                                                           snake_center_y], [snake_center_x, snake_center_y-1]]
         self.direction = curses.KEY_RIGHT
         if self.level == 2:
-            self.snake = [[snake_center_x + 1, snake_center_y + 5], [snake_center_x + 1, snake_center_y+4], [snake_center_x + 1, snake_center_y+3]]
+            self.snake = [[snake_center_x + 1, snake_center_y + 5], [snake_center_x +
+                                                                     1, snake_center_y+4], [snake_center_x + 1, snake_center_y+3]]
         elif self.level == 3:
-            self.snake = [[snake_center_x + 4, snake_center_y + 5], [snake_center_x + 4, snake_center_y + 4], [snake_center_x + 4, snake_center_y + 3]]
+            self.snake = [[snake_center_x + 4, snake_center_y + 5], [snake_center_x +
+                                                                     4, snake_center_y + 4], [snake_center_x + 4, snake_center_y + 3]]
 
         # draw snake's body with a character emoji
         for y, x in self.snake:
@@ -327,7 +329,7 @@ class Game:
 
     def progress_to_next_level(self):
         """ Allow progress to next level"""
-        msg = "How you doing? Leveling up, player."
+        msg = "You've got game, player! Next Level 🚀 "
         sh, sw = self.stdscr.getmaxyx()
         self.addstr(sh//2, sw//2-len(msg)//2, msg)
         self.stdscr.nodelay(0)
@@ -426,7 +428,7 @@ class Game:
             self.stdscr.refresh()
 
     def run(self):
-        """ Run the program"""
+        """ Run the game"""
         # ----- Show Menu ----------
         ret_val = self.menu_main()
         # menu_main returns true or false,
@@ -452,6 +454,9 @@ class Game:
             # everytime the snake moves, anew head is created
             # ask the user to press a key
             key = self.stdscr.getch()
+            exit_key = 120
+            if key == exit_key:
+                break
 
             if key in [curses.KEY_RIGHT, curses.KEY_LEFT, curses.KEY_UP,
                        curses.KEY_DOWN]:
@@ -506,7 +511,7 @@ class Game:
             the game is over
             """
             if (self.evaluate_field()):
-                msg = "Game Over!"
+                msg = "You waited too long and now you are the mayor of the friend zone. Game Over!"
                 sh, sw = self.stdscr.getmaxyx()
                 self.addstr(sh//2, sw//2-len(msg)//2, msg)
                 self.stdscr.nodelay(0)
