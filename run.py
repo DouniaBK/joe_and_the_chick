@@ -38,9 +38,10 @@ class Game:
         try:
             self.stdscr.addstr(y_coord, x_coord, text)
         except Exception:
-            print("")
+            pass
 
-    """-------------------- MENU -----------------------"""
+    """---------------- MENUS AND MESSAGES --------------------"""
+
     def print_menu(self, selected_row_idx):
         """
         Print menu
@@ -109,12 +110,12 @@ class Game:
         Try block to handle terminal incompatibility
         with disabling the cursor. If terminal does not
         support invisible cursors, as the one provided in the
-        code-institute template, curs_set will return an error.
+        Code-Institute template, curs_set will return an error.
         """
         try:
             curses.curs_set(0)
         except Exception:
-            print("Disabling cursor not supported by terminal provided by Code Institute") # noqa
+            pass
 
         curses.init_pair(1, curses.COLOR_GREEN, curses.COLOR_CYAN)
         current_row = 0
@@ -140,6 +141,30 @@ class Game:
                     return False
 
             self.print_menu(current_row)
+
+    def print_game_complete(self):
+        """
+        Print a message when the player completes the game
+        """
+        self.stdscr.clear()
+        self.stdscr.nodelay(0)
+
+        game_complete_msg = ["🚀 YOU'VE GOT GAME 🐤", "",
+                                "Congratulations you successfully completed", # noqa
+                                "Joe and the chick", "",
+                                "Press any key to exit"]
+
+        h_screen, w_screen = self.stdscr.getmaxyx()
+
+        for idx, row in enumerate(game_complete_msg):
+            pos_x = w_screen//2 - len(row)//2
+            pos_y = h_screen//2 - len(game_complete_msg)//2 + idx
+            self.addstr(pos_y, pos_x, row)
+
+        self.stdscr.refresh()
+        self.stdscr.getch()
+        self.stdscr.nodelay(1)
+
 
     """-------------------- Game -----------------------"""
 
@@ -199,11 +224,11 @@ class Game:
             for y in range(y_start_idx, y_end_idx):
                 self.fieldItems[x, y] = 1
 
-    def generate_barrier(self):
+    def generate_level_elements(self):
         """
-        Generate a barrier
-        Coodinates are calculated in percent
-        Mug appears between the mid-center barriers
+        Generate barriers and other game elements
+        Barrier coodinates are given in percent
+        The coffee mug appears at different locations in the levels
         """
         if self.level == 1:
             self.generate_barrier_rectangle(0.20, 0.26, 0.0, 0.50)
@@ -239,7 +264,7 @@ class Game:
             self.addstr(coffee_mug[0], coffee_mug[1], '☕')
 
     def is_within_barriers(self, x, y):
-        """ check within field """
+        """ Check if the coordinate is inside the field """
         return (x < self.max_x) and (x > self.min_x) and (y < self.max_y) and (y > self.min_y) # noqa
 
     def draw_barrier(self):
@@ -262,14 +287,16 @@ class Game:
                     self.addstr(x, y, '🌯')
 
     def evaluate_level_up(self):
-        """ check the score and evaluate the level accordingly"""
+        """ Check the score and evaluate the level accordingly"""
         if (self.score >= 5):
             self.level = self.level + 1
             return True
 
         return False
 
+
     def initialize_field(self):
+        """ Initialize the playing field depending on the level """
 
         self.stdscr.erase()
         self.stdscr.nodelay(1)
@@ -288,8 +315,8 @@ class Game:
         # initialize field items array, which stores the game level
         self.fieldItems = np.zeros((sh, sw))
 
-        # generate_barrier
-        self.generate_barrier()
+        # generate_level_elements
+        self.generate_level_elements()
         self.draw_barrier()
 
         # generate reward and print it on the field
@@ -443,15 +470,15 @@ class Game:
         if not ret_val:
             return
         # ----- Start Game ----------
-        """ Set up curses
-        Try block to handle terminal incompatibility
-        with disabling the cursor. If terminal does not
-        support invisible cursors, as the one provided in the
-        code-institute template, curs_set will return an error."""
+        # Set up curses
+        # Try block to handle terminal incompatibility
+        # with disabling the cursor. If terminal does not
+        # support invisible cursors, as the one provided in the
+        # code-institute template, curs_set will return an error.
         try:
             curses.curs_set(0)
         except Exception:
-            print("Disabling cursor not supported by terminal")
+            pass
         self.stdscr.nodelay(1)
 
         # Initialize the playing field based on the current level
@@ -512,11 +539,10 @@ class Game:
                 # and replaced by a space
                 self.addstr(self.snake[-1][0], self.snake[-1][1], ' ')
                 self.snake.pop()
-            """
-            rules of the game
-            if snake crashes against the border, a barrier or bites itself
-            the game is over
-            """
+            
+            # rules of the game
+            # if snake crashes against the border, a barrier or bites itself
+            # the game is over
             if self.evaluate_field():
                 msg = "You are the mayor of the friend zone. Game Over!"
                 sh, sw = self.stdscr.getmaxyx()
@@ -525,14 +551,19 @@ class Game:
                 self.stdscr.getch()
                 break
 
+            # Refresh the terminal display
             self.stdscr.refresh()
 
             # Evaluate the level progress
             lvlup = self.evaluate_level_up()
             if lvlup is True:
-                self.progress_to_next_level()
+                # Evaluate if the user completed the game
+                if self.level > 3:
+                    self.print_game_complete()
+                    break
 
-            # key = self.stdscr.getch()
+                # Progress to next level
+                self.progress_to_next_level()
 
 
 def main(stdscr):
