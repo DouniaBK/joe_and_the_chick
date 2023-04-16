@@ -25,8 +25,8 @@ Joe and the chick is a simple snake game with level design architecture and stor
 * Local Deployment
 * Heroku Deployment
 ## Credit and Contact
-* Images
 * Code
+    Part of the basic game structure using curses, have been done follwoing a course on how to use curses provided by Nikhil Kumar Singh also known as Indian phythonista. These sections are mentioned in the code.
 * Contact
 
 ## UX
@@ -74,7 +74,7 @@ Emoticons are widely used among the targeted players' age range of this game. Em
 The characters in the game are:
 * Snake ▓  
 * Chick 🐤
-* Pastrami Sandwich🌯 rewards 2 points
+* Pastrami Sandwich 🌯 rewards 2 points
 * Taser ⚡decrement 1 point
 * Barrier ▩ instant death
 * Cofee mug ☕ increase speed by 25%
@@ -177,6 +177,7 @@ The cursor will therefore be visible in the deployed version of the app, while b
 * Fix: Try block to handle terminal incompatibility with disabling the cursor. If terminal does not support invisible cursors, as the one provided in the code-institute template, curs_set will return an error.
 
 ### Chick Emoji
+
  * Bug: Due to the size of the chick emoji, the collision between the snake the chick was not being registered. Visually the player thinks he has hit the target but computationaly it did not due to an offset.
 
  * Fix: Determine if the snake ate the chick and return true if so The terminal draws the chick one cell to the left due to the emoji size. This visual offset is compensated for here by extending the radius of possible target hits.
@@ -190,11 +191,13 @@ The cursor will therefore be visible in the deployed version of the app, while b
 * Fix: add aprobability of 50% of appearance
 
 ### General for all Emojis
+
 * Bug: Emojis visually occupy more than one cell within the terminal, which leads to incorrect 
 detection behavior.
 * Fix: This terminal drawing behavior needed to be taken into account during collision detection. 
 
 ### Calculation of barrier position
+
 * Bug: Barriers looked different depending on the online terminal and the Gitpod terminal, which was due to an incorrect calculation of the barrier position.
 * Fix: Adapted the terminal position to take into account only the game field.
 
@@ -204,10 +207,32 @@ detection behavior.
 * Fix: The fix was to wrap addstr() into a try block, which avoids crashing the game if 
 addstr returns an error.
 
-### Terminal problem
-* Problem: line too long (86 > 79 characters)
+### Terminal flagged errors
+* Problem: line too long (86 > 79 characters) was often flagged but since it didn't effect the program and the testing process, I chose to disable quality assurance as shown below.
 * Fix : # noqa
 
+### Heroku terminal text-size error:
+* Bug: the deployed heroku terminal could not display the full size text without crashing.
+* Solution: the text size and the coordinates had to be adjusted to fit the terminal.
+## Known bugs:
+### Heroku terminal crashing:
+* Bug: the game sometimes crashes randomly or misprintst a section of the game in the heroku terminal in a none deterministic way.
+* Solution: Since the Heroku terminal misbehaves randomly but the Gitpod terminal works perfectly, I was not able to solve the issue.
+## Testing
+### Automated Testing:
+- Every feature has been tested using the Python Debug Console as the game was constructed and eventually deployed to Heroku for further testing and adjustments until the game worked smoothly.
+
+### Manual Testing
+- The game has been thoughly tested in the terminal as well as the Heroku terminal. An error often occured due to the size of the text for example in the Lengend section, see bug section for solution.
+- The menu and the game have been developed and tested in their own files before being merged, adapted and further developed in run.py. The file menu.py and game.py have been deleted.
+- The entire code has been validated by the CI Python Linter(PEP8 Python validator) provided by Code Institute and no errors were reported.
+
 ## Deployment
-* Local Deployment
-* Heroku Deployment
+ The game was development and deployed using the Code Institute's mock terminal for Heroku. 
+ * I followed the steps provided by the Code Institute for a smooth deployment, which are:
+  1. Fork the python template repository
+  2. Develop the initial game program
+  3. Create the Heroku app
+  4. Add the building backs to Python and NodeJS as instructed
+  5. Link the Heroku app to the github repository Joe and the chick
+  6. Deploy and then view app, proceed with developing and testing the game.
