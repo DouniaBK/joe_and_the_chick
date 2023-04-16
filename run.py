@@ -98,7 +98,7 @@ class Game:
 
     def print_center(self, text):
         """ Print menu in the center of the terminal"""
-        # inspired by Nikhil Kumar Singh
+        # inspired by Nikhil Kumar Singh's code
         self.stdscr.clear()
         h, w = self.stdscr.getmaxyx()
         x = w//2 - len(text)//2
@@ -151,7 +151,7 @@ class Game:
         self.stdscr.clear()
         self.stdscr.nodelay(0)
 
-        game_complete_msg = ["🚀  YOU'VE GOT GAME 🐤", "",
+        game_complete_msg = ["🚀 How you doiiing? 🐤", "",
                                 "Congratulations you successfully completed",  # noqa
                                 "Joe and the chick", "",
                                 "Press any key to exit"]
@@ -189,7 +189,7 @@ class Game:
     def print_score(self):
         """print score in the top center of the terminal outside the field"""
         sh, sw = self.stdscr.getmaxyx()
-        score_display = "Score: {}".format(self.score)
+        score_display = "Chick Score: {}".format(self.score)
         self.addstr(1, sw//2-len(score_display)//2, score_display)
         self.stdscr.refresh()
 
@@ -362,7 +362,7 @@ class Game:
 
     def progress_to_next_level(self):
         """ Allow progress to next level"""
-        msg = "You've got game, player! Next Level 🚀 "
+        msg = "You, chick magnet, are moving to the next level 🚀"
         sh, sw = self.stdscr.getmaxyx()
         self.addstr(sh//2, sw//2-len(msg)//2, msg)
         self.stdscr.nodelay(0)
@@ -496,7 +496,7 @@ class Game:
                 self.direction = key
 
             head = self.snake[0]
-            # Followed Nikhil Kumar Singh's course on how to generate a new head
+            # Followed Nikhil Kumar Singh's course on how to generate a new head # noqa
             if self.direction == curses.KEY_RIGHT:
                 new_head = [head[0], head[1]+1]
             elif self.direction == curses.KEY_LEFT:
