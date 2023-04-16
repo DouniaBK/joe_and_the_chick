@@ -76,7 +76,7 @@ class Game:
 
         h, w = self.stdscr.getmaxyx()
         how_to_play = ["LEGEND", "",
-                       "This game is inspired by the ultimate player, Joe Tribiani from Friends.", "",  # noqa
+                       "This game is inspired by the ultimate player, Joe Tribbiani from Friends.", "",  # noqa
                        "The Snake (▓) plays the role of Joe who has to:", "",
                        "Get chicks (🐤) to score points.",
                        "Eat a pastrami Sandwich (🌯) to regain force and score 2 points.",  # noqa
@@ -164,6 +164,7 @@ class Game:
             self.addstr(pos_y, pos_x, row)
 
         self.stdscr.refresh()
+        time.sleep(1)
         self.stdscr.getch()
         self.stdscr.nodelay(1)
 
@@ -189,7 +190,7 @@ class Game:
     def print_score(self):
         """print score in the top center of the terminal outside the field"""
         sh, sw = self.stdscr.getmaxyx()
-        score_display = "Chick Score: {}".format(self.score)
+        score_display = "Score: {}".format(self.score)
         self.addstr(1, sw//2-len(score_display)//2, score_display)
         self.stdscr.refresh()
 
@@ -275,7 +276,7 @@ class Game:
                     self.addstr(x, y, '▩')
 
     def generate_reward(self):
-        """ Generate sandwich for joe as a reward to increase score"""
+        """ Generate sandwich for Joeas a reward to increase score"""
         reward = self.find_free_coordinate()
         self.fieldItems[reward[0], reward[1]] = 2
 
@@ -362,7 +363,7 @@ class Game:
 
     def progress_to_next_level(self):
         """ Allow progress to next level"""
-        msg = "You, chick magnet, are moving to the next level 🚀"
+        msg = "You chick magnet, are moving to the next level 🚀"
         sh, sw = self.stdscr.getmaxyx()
         self.addstr(sh//2, sw//2-len(msg)//2, msg)
         self.stdscr.nodelay(0)
@@ -543,7 +544,7 @@ class Game:
             # if snake crashes against the border, a barrier or bites itself
             # the game is over
             if self.evaluate_field():
-                msg = "You are the mayor of the friend zone. Game Over!"
+                msg = "You have been friend-zoned. Game Over!"
                 sh, sw = self.stdscr.getmaxyx()
                 self.addstr(sh//2, sw//2-len(msg)//2, msg)
                 self.stdscr.nodelay(0)
