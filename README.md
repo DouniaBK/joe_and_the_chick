@@ -77,7 +77,7 @@ The characters in the game are:
 * Pastrami Sandwich🌯 rewards 2 points
 * Taser ⚡decrement 1 point
 * Barrier ▩ instant death
-* Cofee mug ☕ increase speed by factor of 2
+* Cofee mug ☕ increase speed by 25%
 
 ### Features
 

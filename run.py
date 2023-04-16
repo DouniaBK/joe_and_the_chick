@@ -28,7 +28,7 @@ class Game:
         self.min_y = 0
         self.max_y = 0
 
-    """------------- Helper Functions ------------------"""
+    # ------------- Helper Functions ------------------
 
     def addstr(self, y_coord, x_coord, text):
         """
@@ -40,7 +40,7 @@ class Game:
         except Exception:
             pass
 
-    """---------------- MENUS AND MESSAGES --------------------"""
+    # ---------------- MENUS AND MESSAGES --------------------
 
     def print_menu(self, selected_row_idx):
         """
@@ -165,9 +165,7 @@ class Game:
         self.stdscr.getch()
         self.stdscr.nodelay(1)
 
-
-    """-------------------- Game -----------------------"""
-
+    # -------------------- Game -----------------------
     def find_free_coordinate(self):
         """
         find the food coordinates making sure it appears inside the box
@@ -293,7 +291,6 @@ class Game:
             return True
 
         return False
-
 
     def initialize_field(self):
         """ Initialize the playing field depending on the level """
