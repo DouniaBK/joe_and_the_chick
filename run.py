@@ -17,8 +17,8 @@ class Game:
         self.box = []
         self.score = 0
         self.level = 1
-        self.menu = ['Home', 'Play', 'Legend', 'Exit']
-        self.welc_msg = ['☕ Welcome to Joe and the chick 🐤', 'If you got game with the chicks,', 'select Play or go learn the game in Legend.'] # noqa
+        self.menu = ['Play', 'Legend', 'Exit']
+        self.welc_msg = ['☕  Welcome to Joe and the chick 🐤', 'If you got game with the chicks,', 'select Play or go learn the game in Legend.'] # noqa
         self.direction = curses.KEY_RIGHT
         self.fieldItems = []
         self.speed = 200
@@ -149,7 +149,7 @@ class Game:
         self.stdscr.clear()
         self.stdscr.nodelay(0)
 
-        game_complete_msg = ["🚀 YOU'VE GOT GAME 🐤", "",
+        game_complete_msg = ["🚀  YOU'VE GOT GAME 🐤", "",
                                 "Congratulations you successfully completed", # noqa
                                 "Joe and the chick", "",
                                 "Press any key to exit"]
@@ -354,9 +354,9 @@ class Game:
         if self.level == 1:
             self.speed = 200
         elif self.level == 2:
-            self.speed = 180
-        elif self.level == 3:
             self.speed = 160
+        elif self.level == 3:
+            self.speed = 140
         self.stdscr.timeout(self.speed)
 
         self.stdscr.refresh()
