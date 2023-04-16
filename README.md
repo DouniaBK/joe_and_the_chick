@@ -48,7 +48,7 @@ The game is played using the following keys:
 1. KEY_UP to move upward
 2. KEY_DOWN to move downward
 3. KEY_RIGHT to move right
-4. KEY_LEFT to move upward
+4. KEY_LEFT to move left
 5. Press X to exit the game
 6. Press any key to return to the Menu from Legend
 7. Enter to select
@@ -261,4 +261,4 @@ detection behavior.
 * Developer's story:
 
     Growing up, the timeless series Friends, was one of my favorites as it continuously cheered me up and thus, I wanted to bring
-    these funny moments and hilarious and unforgettable lines to the game. Joe's outgoing, half-witted personality and love of dating women (chicks) inspired me in creating and developing this chasing game. I have further plans to add other characters from Friends injecting more humor and challenges to the game. I hope you have fun playing this game if you want to reach out, I am available at douniazedbacha@gmail.com .
+    the series funny moments and hilarious and unforgettable lines to the game. Joe's outgoing, half-witted personality and love of dating women (chicks) inspired me in creating and developing this chasing game. I have further plans to add other characters from Friends injecting more humor and challenges to the game. I hope you have fun playing this game if you want to reach out, I am available at douniazedbacha@gmail.com .
