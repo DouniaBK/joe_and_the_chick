@@ -82,7 +82,7 @@ The characters in the game are:
 
 ## Features
 
-#### Game Elements:
+#### Game Elements and Game Logic:
 
 * Snake ▓ :
 
@@ -110,7 +110,7 @@ The characters in the game are:
 
 * Barriers:
 
- The barriers are specifically designed for each level. As the player increases his score, the barriers will change position and shape to create a maze-like environment. The barriers will appear in specific coordinates where neither the snake nor the other features are, to avoid a premature end of the game.
+    The barriers are specifically designed for each level. As the player increases his score, the barriers will change position and shape to create a maze-like environment. The barriers will appear in specific coordinates where neither the snake nor the other features are, to avoid a premature end of the game.
 
  * Coffee ☕:
     
@@ -140,7 +140,8 @@ The menu:
   * Introduction of a rival that hinders the chick chase
   * The chick is not interested in Joe but rather Monica
   * Pause the game feature with an input
-
+### Game logic:
+* Find the link to the game logic chart [here](https://drive.google.com/file/d/16J0S_AEZp77vxeWnBqbtn2T3fxIQ4qEY/view?usp=sharing)
 ## Information Architecture
 ### Data Models
 
@@ -157,7 +158,7 @@ The game class is divided into three sections:
 I used Python to develop and design the game's logic.
 ### Libraries
 
-* Curses : find the link [here](https://docs.python.org/3/howto/curses.html) for a detailed description.
+* Curses : find the link [here](https://docs.python.org/3/howto/curses.html) for a detailed description. I chose to use curses, for a clear game visual design for the player and logic.
 * Numpy : to install numpy, simply type in the terminal : pip3 install numpy
 * Random
 * Time
